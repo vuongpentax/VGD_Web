@@ -1,8 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CompatibilityRow } from "@/components/compatibility-row";
 import { ConceptArtwork } from "@/components/concept-artwork";
+import { MediaGallery } from "@/components/media-gallery";
 import { ProductSelector } from "@/components/product-selector";
+import { ReleaseBadge } from "@/components/release-badge";
 import { createMetadata } from "@/lib/seo";
 import { getProduct, previewCatalog } from "@/lib/catalog";
 import { isLocale, locales, getUi } from "@/lib/i18n";
@@ -49,8 +52,8 @@ export default async function ProductPage({ params }: PageProps) {
           <h1>{product.name}</h1>
           <p className="intro-copy">{product.summary[locale]}</p>
           <div className="product-quick-facts">
-            <div><span>{vi ? "Bản phát hành" : "Release"}</span><strong>{copy.noRelease}</strong></div>
-            <div><span>{vi ? "Tương thích" : "Compatibility"}</span><strong>{copy.compatibility}</strong></div>
+            <div><span>{vi ? "Bản phát hành" : "Release"}</span><ReleaseBadge locale={locale} /></div>
+            <CompatibilityRow locale={locale} status={{ kind: "pending" }} />
           </div>
           <Link className="button button-primary product-detail-button" href={"/" + locale + "/center"}>
             {vi ? "Tìm hiểu cách dùng VGD Center" : "Learn about VGD Center"}<span aria-hidden="true">↗</span>
@@ -71,6 +74,11 @@ export default async function ProductPage({ params }: PageProps) {
               : "Feature and workflow copy will be added after checking the production source and receiving review. This page does not describe unverified functionality."}</p>
           </section>
           <section className="content-section content-section-border">
+            <p className="eyebrow">{vi ? "HÌNH ẢNH" : "MEDIA"}</p>
+            <h2>{vi ? "Hình ảnh sản phẩm" : "Product imagery"}</h2>
+            <MediaGallery locale={locale} items={[]} />
+          </section>
+          <section className="content-section content-section-border">
             <p className="eyebrow">{vi ? "TÀI LIỆU" : "DOCUMENTATION"}</p>
             <h2>{vi ? "Hướng dẫn sẽ được cập nhật" : "Guides will be added"}</h2>
             <p>{vi
@@ -82,7 +90,7 @@ export default async function ProductPage({ params }: PageProps) {
         <aside className="detail-aside" aria-label={vi ? "Trạng thái sản phẩm" : "Product status"}>
           <p className="eyebrow">{vi ? "TRẠNG THÁI" : "STATUS"}</p>
           <dl className="status-list">
-            <div><dt>{vi ? "Bản phát hành" : "Release"}</dt><dd>{copy.noRelease}</dd></div>
+            <div><dt>{vi ? "Bản phát hành" : "Release"}</dt><dd><ReleaseBadge locale={locale} /></dd></div>
             <div><dt>{vi ? "Tương thích" : "Compatibility"}</dt><dd>{copy.compatibility}</dd></div>
             <div><dt>{vi ? "Kênh" : "Channel"}</dt><dd>{vi ? "Đang xác nhận" : "To be confirmed"}</dd></div>
           </dl>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ConceptArtwork } from "@/components/concept-artwork";
 import { PageIntro } from "@/components/page-intro";
+import { StatusState } from "@/components/status-state";
 import { createMetadata } from "@/lib/seo";
 import { isLocale, type Locale } from "@/lib/i18n";
 
@@ -63,16 +64,18 @@ export default async function CenterPage({ params }: PageProps) {
     </section>
 
     <section className="section-block page-width">
-      <div className="release-empty" aria-labelledby="center-release-title">
-        <div className="release-empty-symbol" aria-hidden="true">!</div>
-        <div><p className="eyebrow">VGD CENTER</p>
-          <h2 id="center-release-title">{vi ? "Chưa có bản phát hành" : "No release available yet"}</h2>
-          <p>{vi
-            ? "Link tải chính thức sẽ chỉ xuất hiện sau khi release Center được xác minh và công bố. Không dùng gói RBZ hoặc URL chưa được xác nhận."
-            : "The official download link will appear after a VGD Center release is verified and published. Do not use an unverified RBZ package or URL."}</p>
-        </div>
+      <StatusState
+        kind="unavailable"
+        className="release-empty"
+        eyebrow="VGD CENTER"
+        title={vi ? "Chưa có bản phát hành" : "No release available yet"}
+        description={vi
+          ? "Link tải chính thức sẽ chỉ xuất hiện sau khi release Center được xác minh và công bố. Không dùng gói RBZ hoặc URL chưa được xác nhận."
+          : "The official download link will appear after a VGD Center release is verified and published. Do not use an unverified RBZ package or URL."}
+        icon="!"
+      >
         <span className="empty-state-tag">{vi ? "Đang xác nhận" : "Pending verification"}</span>
-      </div>
+      </StatusState>
       <div className="inline-link-row">
         <Link className="text-link" href={`/${locale}/docs`}>{vi ? "Đọc hướng dẫn tổng quan" : "Read the overview guide"}<span aria-hidden="true">↗</span></Link>
         <Link className="text-link" href={`/${locale}/plugins`}>{vi ? "Duyệt danh mục plugin" : "Browse the plugin catalog"}<span aria-hidden="true">↗</span></Link>

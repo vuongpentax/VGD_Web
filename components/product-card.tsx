@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
 import { getUi } from "@/lib/i18n";
 import { productTabLabel, type PreviewProduct } from "@/lib/catalog";
+import { ReleaseBadge } from "@/components/release-badge";
 
 export function ProductCard({ product, locale }: { product: PreviewProduct; locale: Locale }) {
   const copy = getUi(locale);
@@ -23,7 +24,7 @@ export function ProductCard({ product, locale }: { product: PreviewProduct; loca
       <div className="product-card-body">
         <div className="product-card-top">
           <span className="pending-copy">{copy.pending}</span>
-          <span className="status-pill status-pill-muted"><span className="status-dot" aria-hidden="true" />{copy.noRelease}</span>
+          <ReleaseBadge locale={locale} />
         </div>
         <div className="product-card-copy">
           <h3>{product.name}</h3>

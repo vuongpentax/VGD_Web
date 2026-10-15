@@ -228,3 +228,15 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* Shared content components use the existing VGD design tokens. */
+.release-badge { border-color: var(--ds-color-border-muted); border-radius: var(--ds-radius-md); color: var(--ds-color-text-secondary); background: var(--ds-color-surface-muted); font-size: var(--ds-font-xs); }
+.release-badge-unreleased { color: var(--ds-color-text-tertiary); background: var(--ds-color-surface-muted); }
+.compatibility-row > span { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); }
+.compatibility-row > strong { color: var(--ds-color-text-secondary); font-size: var(--ds-font-xs); }
+.status-state, .changelog-entry { border-color: var(--ds-color-border-muted); border-radius: var(--ds-radius-xs); background: var(--ds-color-surface-muted); }
+.status-state-icon { border-radius: var(--ds-radius-xs); color: var(--ds-color-surface-base); background: var(--ds-color-surface-muted); }
+.status-state-title, .changelog-entry-header h2, .changelog-entry-group h3 { color: var(--ds-color-surface-base); }
+.status-state-description, .changelog-entry-date, .changelog-entry-group ul, .media-gallery-item figcaption { color: var(--ds-color-text-tertiary); }
+.media-gallery-frame, .media-gallery-empty, .media-gallery-error { border-color: var(--ds-color-border-muted); border-radius: var(--ds-radius-xs); background: var(--ds-color-surface-muted); }
+.changelog-entry { box-shadow: none; }
