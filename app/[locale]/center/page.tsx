@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ConceptArtwork } from "@/components/concept-artwork";
 import { PageIntro } from "@/components/page-intro";
 import { createMetadata } from "@/lib/seo";
 import { isLocale, type Locale } from "@/lib/i18n";
@@ -30,18 +31,22 @@ export default async function CenterPage({ params }: PageProps) {
   ];
 
   return <>
-    <PageIntro
-      eyebrow={vi ? "EXTENSION QUẢN LÝ · SKETCHUP" : "PLUGIN MANAGER · SKETCHUP"}
-      title="VGD Center"
-      description={vi
-        ? "Website giúp bạn tìm hiểu. VGD Center quản lý cài đặt, cập nhật và gỡ plugin bên trong SketchUp."
-        : "The website helps you explore. VGD Center manages plugin installation, updates, and removal inside SketchUp."}
-    >
-      <div className="detail-actions">
-        <span className="status-pill status-pill-muted"><span className="status-dot" aria-hidden="true" />{vi ? "Chưa có bản phát hành" : "No release available yet"}</span>
-        <span className="button button-disabled" aria-disabled="true">{vi ? "Chưa có link tải chính thức" : "Official download not available"}</span>
-      </div>
-    </PageIntro>
+    <section className="center-page-hero page-width">
+      <PageIntro
+        eyebrow={vi ? "EXTENSION QUẢN LÝ · SKETCHUP" : "PLUGIN MANAGER · SKETCHUP"}
+        title="VGD Center"
+        description={vi
+          ? "Website giúp bạn tìm hiểu. VGD Center quản lý cài đặt, cập nhật và gỡ plugin bên trong SketchUp."
+          : "The website helps you explore. VGD Center manages plugin installation, updates, and removal inside SketchUp."}
+      >
+        <div className="detail-actions">
+          <span className="status-pill status-pill-muted"><span className="status-dot" aria-hidden="true" />{vi ? "Chưa có bản phát hành" : "No release available yet"}</span>
+          <span className="button button-disabled" aria-disabled="true">{vi ? "Chưa có link tải chính thức" : "Official download not available"}</span>
+          <Link className="button button-secondary" href={`/${locale}/docs`}>{vi ? "Đọc hướng dẫn" : "Read the guides"}<span aria-hidden="true">↗</span></Link>
+        </div>
+      </PageIntro>
+      <ConceptArtwork locale={locale} subject="VGD Center" variant="center" />
+    </section>
 
     <section className="section-block page-width">
       <div className="section-heading">
@@ -69,7 +74,7 @@ export default async function CenterPage({ params }: PageProps) {
         <span className="empty-state-tag">{vi ? "Đang xác nhận" : "Pending verification"}</span>
       </div>
       <div className="inline-link-row">
-        <Link className="text-link" href={`/${locale}/docs/cai-vgd-center`}>{vi ? "Đọc hướng dẫn tổng quan" : "Read the overview guide"}<span aria-hidden="true">↗</span></Link>
+        <Link className="text-link" href={`/${locale}/docs`}>{vi ? "Đọc hướng dẫn tổng quan" : "Read the overview guide"}<span aria-hidden="true">↗</span></Link>
         <Link className="text-link" href={`/${locale}/plugins`}>{vi ? "Duyệt danh mục plugin" : "Browse the plugin catalog"}<span aria-hidden="true">↗</span></Link>
       </div>
     </section>

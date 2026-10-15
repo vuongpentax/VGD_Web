@@ -11,8 +11,6 @@ const navItems = [
   ["center", "center"],
   ["docs", "docs"],
   ["changelog", "changelog"],
-  ["roadmap", "roadmap"],
-  ["about", "about"],
   ["contact", "contact"],
 ] as const;
 
@@ -105,7 +103,12 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             aria-label={locale === "vi" ? "Điều hướng chính" : "Primary navigation"}
           >
             {navItems.map(([key, href]) => (
-              <Link key={key} href={`/${locale}/${href}`} onClick={closeMenu}>
+              <Link
+                key={key}
+                href={`/${locale}/${href}`}
+                aria-current={pathname === `/${locale}/${href}` || pathname.startsWith(`/${locale}/${href}/`) ? "page" : undefined}
+                onClick={closeMenu}
+              >
                 {copy.nav[key]}
               </Link>
             ))}
@@ -114,10 +117,6 @@ export function SiteHeader({ locale }: { locale: Locale }) {
               <span aria-hidden="true">/</span>
               <Link href={switchLocale("en")} aria-current={locale === "en" ? "page" : undefined} onClick={closeMenu}>EN</Link>
             </div>
-            <Link className="nav-cta" href={`/${locale}/center`} onClick={closeMenu}>
-              {locale === "vi" ? "Khám phá Center" : "Explore Center"}
-              <span aria-hidden="true">↗</span>
-            </Link>
           </nav>
         </div>
       </header>

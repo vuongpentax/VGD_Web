@@ -25,6 +25,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             <p className="footer-label">{locale === "vi" ? "Thông tin" : "About"}</p>
             <Link href={`/${locale}/changelog`}>{copy.nav.changelog}</Link>
             <Link href={`/${locale}/roadmap`}>{copy.nav.roadmap}</Link>
+            <Link href={"/" + locale + "/about"}>{copy.nav.about}</Link>
             <Link href={`/${locale}/contact`}>{copy.nav.contact}</Link>
           </div>
         </div>

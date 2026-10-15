@@ -79,3 +79,7 @@ export const previewCatalog: PreviewProduct[] = [
 export function getProduct(slug: string) {
   return previewCatalog.find((product) => product.slug === slug);
 }
+
+export function productTabLabel(product: PreviewProduct) {
+  return product.name.replace(/^VGD[ _]/, "").replace(/ — .+$/, "");
+}
