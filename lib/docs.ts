@@ -1,80 +1,137 @@
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import type { Locale } from "@/lib/i18n";
+
+export type MarkdownBlock =
+  | { type: "paragraph"; text: string }
+  | { type: "list"; ordered: false; items: string[] };
+
+interface ParsedGuide {
+  title: string;
+  description: string;
+  sections: Array<{ id: string; heading: string; blocks: MarkdownBlock[] }>;
+}
 
 export interface Guide {
   slug: string;
   title: Record<Locale, string>;
   description: Record<Locale, string>;
   sections: Array<{
+    id: string;
     heading: Record<Locale, string>;
-    paragraphs: Record<Locale, string[]>;
+    blocks: Record<Locale, MarkdownBlock[]>;
   }>;
 }
 
-export const guides: Guide[] = [
-  {
-    slug: "website-va-center",
-    title: {
-      vi: "Website VGD và VGD Center",
-      en: "The VGD website and VGD Center",
-    },
-    description: {
-      vi: "Hiểu vai trò của website và extension quản lý trong SketchUp.",
-      en: "Understand the roles of the website and the in-SketchUp manager.",
-    },
-    sections: [
-      {
-        heading: { vi: "Tìm hiểu trên website", en: "Explore on the website" },
-        paragraphs: {
-          vi: [
-            "Website giúp bạn xem danh mục, đọc hướng dẫn, changelog và lộ trình của VGD.",
-            "Website không cài hoặc gỡ plugin trực tiếp trong trình duyệt.",
-          ],
-          en: [
-            "The website helps you browse the catalog, guides, changelog, and roadmap.",
-            "The website does not install or uninstall plugins from the browser.",
-          ],
-        },
-      },
-      {
-        heading: { vi: "Quản lý trong SketchUp", en: "Manage inside SketchUp" },
-        paragraphs: {
-          vi: [
-            "VGD Center là extension dùng để xem catalog, cài, cập nhật và gỡ plugin VGD trong SketchUp.",
-            "Website và Center sẽ đọc cùng một nguồn release metadata khi manifest chính thức được thiết lập.",
-          ],
-          en: [
-            "VGD Center is the extension for browsing the catalog and installing, updating, or removing VGD plugins in SketchUp.",
-            "The website and Center will use the same release metadata source once the canonical manifest is available.",
-          ],
-        },
-      },
-    ],
-  },
-  {
-    slug: "cai-vgd-center",
-    title: { vi: "Cài VGD Center", en: "Install VGD Center" },
-    description: {
-      vi: "Hướng dẫn tổng quan; link tải chính thức sẽ được thêm sau khi xác nhận release.",
-      en: "A general guide; the official download link will be added after the release is confirmed.",
-    },
-    sections: [
-      {
-        heading: { vi: "Trạng thái tải xuống", en: "Download status" },
-        paragraphs: {
-          vi: [
-            "Chưa có link tải VGD Center chính thức được cấu hình trên website. Không tải RBZ từ nguồn không xác nhận.",
-            "Khi có release chính thức, trang VGD Center sẽ hiển thị đúng gói và hướng dẫn cài bằng Extension Manager của SketchUp.",
-          ],
-          en: [
-            "An official VGD Center download link has not been configured on the website. Do not use an unverified RBZ source.",
-            "When an official release is available, the VGD Center page will show the package and Extension Manager installation steps.",
-          ],
-        },
-      },
-    ],
-  },
-];
+const docsRoot = join(process.cwd(), "content", "docs");
+const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+function parseGuideFile(filePath: string): ParsedGuide {
+  const source = readFileSync(filePath, "utf8").replace(/^\uFEFF/, "").replace(/\r\n/g, "\n");
+  const frontMatter = source.match(/^---\n([\s\S]*?)\n---\n?/);
+  if (!frontMatter) throw new Error("Missing front matter in " + filePath);
+
+  const metadata = new Map<string, string>();
+  for (const line of frontMatter[1].split("\n")) {
+    const match = line.match(/^(title|description):\s*(.+)$/);
+    if (match) metadata.set(match[1], match[2].trim().replace(/^["']|["']$/g, ""));
+  }
+
+  const title = metadata.get("title");
+  const description = metadata.get("description");
+  if (!title || !description) throw new Error("Title or description is missing in " + filePath);
+
+  const sections: ParsedGuide["sections"] = [];
+  let active: ParsedGuide["sections"][number] | undefined;
+  let paragraphLines: string[] = [];
+  let listItems: string[] = [];
+
+  const flushParagraph = () => {
+    if (paragraphLines.length && active) active.blocks.push({ type: "paragraph", text: paragraphLines.join(" ") });
+    paragraphLines = [];
+  };
+  const flushList = () => {
+    if (listItems.length && active) active.blocks.push({ type: "list", ordered: false, items: listItems });
+    listItems = [];
+  };
+
+  for (const rawLine of source.slice(frontMatter[0].length).split("\n")) {
+    const line = rawLine.trim();
+    const heading = line.match(/^##\s+([a-z0-9-]+):\s*(.+)$/);
+    if (heading) {
+      flushParagraph();
+      flushList();
+      active = { id: heading[1], heading: heading[2].trim(), blocks: [] };
+      sections.push(active);
+      continue;
+    }
+    if (line.startsWith("#")) throw new Error("Only identified level-two headings are supported in " + filePath);
+    if (!line) {
+      flushParagraph();
+      flushList();
+      continue;
+    }
+    if (line.startsWith("- ")) {
+      flushParagraph();
+      if (!active) throw new Error("Content appears before the first section in " + filePath);
+      listItems.push(line.slice(2).trim());
+      continue;
+    }
+    flushList();
+    if (!active) throw new Error("Content appears before the first section in " + filePath);
+    paragraphLines.push(line);
+  }
+
+  flushParagraph();
+  flushList();
+  if (sections.length === 0 || sections.some((section) => section.blocks.length === 0)) {
+    throw new Error("Guide must contain non-empty sections in " + filePath);
+  }
+  return { title, description, sections };
+}
+
+function readLocalizedGuide(locale: Locale, slug: string): ParsedGuide {
+  const filePath = join(docsRoot, locale, slug + ".md");
+  if (!existsSync(filePath)) throw new Error("Missing " + locale + " guide for " + slug + " at " + filePath);
+  return parseGuideFile(filePath);
+}
+
+function loadGuides(): Guide[] {
+  const viDirectory = join(docsRoot, "vi");
+  const enDirectory = join(docsRoot, "en");
+  if (!existsSync(viDirectory) || !existsSync(enDirectory)) {
+    throw new Error("Both content/docs/vi and content/docs/en are required");
+  }
+
+  const viSlugs = readdirSync(viDirectory).filter((name) => name.endsWith(".md")).map((name) => name.slice(0, -3)).sort();
+  const enSlugs = readdirSync(enDirectory).filter((name) => name.endsWith(".md")).map((name) => name.slice(0, -3)).sort();
+  if (viSlugs.join("|") !== enSlugs.join("|")) {
+    throw new Error("Vietnamese and English documentation slugs must match exactly");
+  }
+
+  return viSlugs.map((slug) => {
+    if (!slugPattern.test(slug)) throw new Error("Invalid documentation slug " + slug);
+    const localized = { vi: readLocalizedGuide("vi", slug), en: readLocalizedGuide("en", slug) };
+    const viIds = localized.vi.sections.map((section) => section.id);
+    const enIds = localized.en.sections.map((section) => section.id);
+    if (viIds.join("|") !== enIds.join("|")) {
+      throw new Error("Section IDs differ between VI and EN for documentation slug " + slug);
+    }
+    return {
+      slug,
+      title: { vi: localized.vi.title, en: localized.en.title },
+      description: { vi: localized.vi.description, en: localized.en.description },
+      sections: localized.vi.sections.map((viSection, index) => ({
+        id: viSection.id,
+        heading: { vi: viSection.heading, en: localized.en.sections[index].heading },
+        blocks: { vi: viSection.blocks, en: localized.en.sections[index].blocks },
+      })),
+    };
+  });
+}
+
+export const guides = loadGuides();
+export const guideSlugs = guides.map((guide) => guide.slug);
 export function getGuide(slug: string) {
   return guides.find((guide) => guide.slug === slug);
 }
