@@ -10,7 +10,7 @@ export interface PreviewProduct {
   slug: string;
   name: string;
   summary: Record<Locale, string>;
-  editorialStatus: "draft";
+  publicationStatus: "draft" | "published";
 }
 
 export const previewCatalog: PreviewProduct[] = [
@@ -22,7 +22,7 @@ export const previewCatalog: PreviewProduct[] = [
       vi: "Sản phẩm trong seed catalog. Nội dung giới thiệu đang chờ đối chiếu và duyệt.",
       en: "A planning-seed product. Its description is awaiting verification and review.",
     },
-    editorialStatus: "draft",
+    publicationStatus: "draft",
   },
   {
     id: "seed-vgd-cabinet",
@@ -32,7 +32,7 @@ export const previewCatalog: PreviewProduct[] = [
       vi: "Sản phẩm trong seed catalog. Nội dung giới thiệu đang chờ đối chiếu và duyệt.",
       en: "A planning-seed product. Its description is awaiting verification and review.",
     },
-    editorialStatus: "draft",
+    publicationStatus: "draft",
   },
   {
     id: "seed-vgd-dim",
@@ -42,7 +42,7 @@ export const previewCatalog: PreviewProduct[] = [
       vi: "Sản phẩm trong seed catalog. Nội dung giới thiệu đang chờ đối chiếu và duyệt.",
       en: "A planning-seed product. Its description is awaiting verification and review.",
     },
-    editorialStatus: "draft",
+    publicationStatus: "draft",
   },
   {
     id: "seed-vgd-image-importer",
@@ -52,7 +52,7 @@ export const previewCatalog: PreviewProduct[] = [
       vi: "Sản phẩm trong seed catalog. Nội dung giới thiệu đang chờ đối chiếu và duyệt.",
       en: "A planning-seed product. Its description is awaiting verification and review.",
     },
-    editorialStatus: "draft",
+    publicationStatus: "draft",
   },
   {
     id: "seed-vgd-scenes",
@@ -62,7 +62,7 @@ export const previewCatalog: PreviewProduct[] = [
       vi: "Sản phẩm trong seed catalog. Nội dung giới thiệu đang chờ đối chiếu và duyệt.",
       en: "A planning-seed product. Its description is awaiting verification and review.",
     },
-    editorialStatus: "draft",
+    publicationStatus: "draft",
   },
   {
     id: "seed-vgd-library",
@@ -72,10 +72,15 @@ export const previewCatalog: PreviewProduct[] = [
       vi: "Sản phẩm trong seed catalog. Nội dung giới thiệu đang chờ đối chiếu và duyệt.",
       en: "A planning-seed product. Its description is awaiting verification and review.",
     },
-    editorialStatus: "draft",
+    publicationStatus: "draft",
   },
 ];
 
+export const publishedCatalog = previewCatalog.filter((product) => product.publicationStatus === "published");
 export function getProduct(slug: string) {
   return previewCatalog.find((product) => product.slug === slug);
+}
+
+export function productTabLabel(product: PreviewProduct) {
+  return product.name.replace(/^VGD[ _]/, "").replace(/ — .+$/, "");
 }

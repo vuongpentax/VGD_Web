@@ -6,7 +6,9 @@ import { SiteHeader } from "@/components/site-header";
 import { PreviewNotice } from "@/components/preview-notice";
 import { isLocale, locales } from "@/lib/i18n";
 import { publicationReady, siteUrl } from "@/lib/site";
+import "@fontsource-variable/manrope";
 import "@/app/globals.css";
+import "@/app/design-system.css";
 
 interface LayoutProps {
   children: ReactNode;

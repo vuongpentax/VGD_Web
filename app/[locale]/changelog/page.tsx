@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageIntro } from "@/components/page-intro";
-import { ReleaseEmptyState } from "@/components/release-empty-state";
+import { ChangelogFeed } from "@/components/changelog-entry";
 import { createMetadata } from "@/lib/seo";
 import { isLocale } from "@/lib/i18n";
 
@@ -22,7 +22,7 @@ export default async function ChangelogPage({ params }: PageProps) {
       description={vi
         ? "Chỉ release đã công bố từ nguồn metadata dùng chung mới xuất hiện tại đây."
         : "Only published releases from the shared metadata source will appear here."} />
-    <section className="section-block page-width"><ReleaseEmptyState locale={locale} />
+    <section className="section-block page-width"><ChangelogFeed locale={locale} entries={[]} />
       <p className="editorial-note">{vi
         ? "Không có version hoặc ghi chú release nào được dựng từ tên file hay source code."
         : "No versions or release notes are inferred from filenames or source code."}</p>

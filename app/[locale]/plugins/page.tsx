@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CatalogSearch } from "@/components/catalog-search";
-import { PageIntro } from "@/components/page-intro";
 import { createMetadata } from "@/lib/seo";
-import { isLocale, locales, getUi } from "@/lib/i18n";
-import { previewCatalog } from "@/lib/catalog";
+import { isLocale, locales } from "@/lib/i18n";
+import { previewCatalog, publishedCatalog } from "@/lib/catalog";
+import { publicationReady } from "@/lib/site";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -27,23 +27,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function PluginsPage({ params }: PageProps) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const copy = getUi(locale);
 
-  return (
-    <>
-      <PageIntro
-        eyebrow={locale === "vi" ? "DANH MỤC" : "CATALOG"}
-        title={locale === "vi" ? "Công cụ cho workflow của bạn." : "Tools for your workflow."}
-        description={locale === "vi"
-          ? "Các sản phẩm dưới đây là seed từ planning. Mô tả, roster và trạng thái phát hành sẽ được xác nhận trước khi website công khai."
-          : "The products below are planning seeds. Descriptions, roster, and release status will be verified before the website is published."}
-      >
-        <div className="intro-meta-row">
-          <span className="status-pill status-pill-muted"><span className="status-dot" aria-hidden="true" />{copy.noRelease}</span>
-          <span>{locale === "vi" ? "Không có version hoặc tương thích giả" : "No invented versions or compatibility claims"}</span>
-        </div>
-      </PageIntro>
-      <CatalogSearch products={previewCatalog} locale={locale} />
-    </>
-  );
+  return <CatalogSearch products={publicationReady ? publishedCatalog : previewCatalog} locale={locale} />;
 }
