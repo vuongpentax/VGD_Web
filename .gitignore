@@ -1,0 +1,15 @@
+.next/
+node_modules/
+.npm-cache/
+out/
+build/
+coverage/
+.vercel/
+.env*
+!.env.example
+*.tsbuildinfo
+.npmrc
+*.pem
+*.key
+*.p12
+*.pfx
