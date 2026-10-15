@@ -6,14 +6,18 @@ export type MarkdownBlock =
   | { type: "paragraph"; text: string }
   | { type: "list"; ordered: false; items: string[] };
 
+export type PublicationStatus = "draft" | "published";
+
 interface ParsedGuide {
   title: string;
   description: string;
+  publicationStatus: PublicationStatus;
   sections: Array<{ id: string; heading: string; blocks: MarkdownBlock[] }>;
 }
 
 export interface Guide {
   slug: string;
+  publicationStatus: PublicationStatus;
   title: Record<Locale, string>;
   description: Record<Locale, string>;
   sections: Array<{
@@ -24,7 +28,7 @@ export interface Guide {
 }
 
 const docsRoot = join(process.cwd(), "content", "docs");
-const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const slugSegmentPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 function parseGuideFile(filePath: string): ParsedGuide {
   const source = readFileSync(filePath, "utf8").replace(/^\uFEFF/, "").replace(/\r\n/g, "\n");
@@ -33,13 +37,17 @@ function parseGuideFile(filePath: string): ParsedGuide {
 
   const metadata = new Map<string, string>();
   for (const line of frontMatter[1].split("\n")) {
-    const match = line.match(/^(title|description):\s*(.+)$/);
+    const match = line.match(/^(title|description|publication_status):\s*(.+)$/);
     if (match) metadata.set(match[1], match[2].trim().replace(/^["']|["']$/g, ""));
   }
 
   const title = metadata.get("title");
   const description = metadata.get("description");
+  const publicationStatus = metadata.get("publication_status") ?? "draft";
   if (!title || !description) throw new Error("Title or description is missing in " + filePath);
+  if (publicationStatus !== "draft" && publicationStatus !== "published") {
+    throw new Error("Invalid publication_status in " + filePath);
+  }
 
   const sections: ParsedGuide["sections"] = [];
   let active: ParsedGuide["sections"][number] | undefined;
@@ -87,11 +95,33 @@ function parseGuideFile(filePath: string): ParsedGuide {
   if (sections.length === 0 || sections.some((section) => section.blocks.length === 0)) {
     throw new Error("Guide must contain non-empty sections in " + filePath);
   }
-  return { title, description, sections };
+  return { title, description, publicationStatus, sections };
+}
+
+function listGuideSlugs(directory: string, parentSegments: string[] = []): string[] {
+  return readdirSync(directory, { withFileTypes: true })
+    .sort((left, right) => left.name.localeCompare(right.name))
+    .flatMap((entry) => {
+      if (entry.isDirectory()) {
+        return listGuideSlugs(join(directory, entry.name), [...parentSegments, entry.name]);
+      }
+      if (!entry.isFile() || !entry.name.endsWith(".md")) return [];
+
+      const filename = entry.name.slice(0, -3);
+      const segments = [...parentSegments, filename];
+      if (segments.some((segment) => !slugSegmentPattern.test(segment))) {
+        throw new Error("Invalid documentation path " + segments.join("/"));
+      }
+      return [segments.join("/")];
+    });
 }
 
 function readLocalizedGuide(locale: Locale, slug: string): ParsedGuide {
-  const filePath = join(docsRoot, locale, slug + ".md");
+  const segments = slug.split("/");
+  if (segments.length === 0 || segments.some((segment) => !slugSegmentPattern.test(segment))) {
+    throw new Error("Invalid documentation slug " + slug);
+  }
+  const filePath = join(docsRoot, locale, ...segments) + ".md";
   if (!existsSync(filePath)) throw new Error("Missing " + locale + " guide for " + slug + " at " + filePath);
   return parseGuideFile(filePath);
 }
@@ -103,15 +133,17 @@ function loadGuides(): Guide[] {
     throw new Error("Both content/docs/vi and content/docs/en are required");
   }
 
-  const viSlugs = readdirSync(viDirectory).filter((name) => name.endsWith(".md")).map((name) => name.slice(0, -3)).sort();
-  const enSlugs = readdirSync(enDirectory).filter((name) => name.endsWith(".md")).map((name) => name.slice(0, -3)).sort();
+  const viSlugs = listGuideSlugs(viDirectory);
+  const enSlugs = listGuideSlugs(enDirectory);
   if (viSlugs.join("|") !== enSlugs.join("|")) {
-    throw new Error("Vietnamese and English documentation slugs must match exactly");
+    throw new Error("Vietnamese and English documentation paths must match exactly");
   }
 
   return viSlugs.map((slug) => {
-    if (!slugPattern.test(slug)) throw new Error("Invalid documentation slug " + slug);
     const localized = { vi: readLocalizedGuide("vi", slug), en: readLocalizedGuide("en", slug) };
+    if (localized.vi.publicationStatus !== localized.en.publicationStatus) {
+      throw new Error("Publication status differs between VI and EN for documentation slug " + slug);
+    }
     const viIds = localized.vi.sections.map((section) => section.id);
     const enIds = localized.en.sections.map((section) => section.id);
     if (viIds.join("|") !== enIds.join("|")) {
@@ -119,6 +151,7 @@ function loadGuides(): Guide[] {
     }
     return {
       slug,
+      publicationStatus: localized.vi.publicationStatus,
       title: { vi: localized.vi.title, en: localized.en.title },
       description: { vi: localized.vi.description, en: localized.en.description },
       sections: localized.vi.sections.map((viSection, index) => ({
@@ -132,6 +165,11 @@ function loadGuides(): Guide[] {
 
 export const guides = loadGuides();
 export const guideSlugs = guides.map((guide) => guide.slug);
+export const publishedGuides = guides.filter((guide) => guide.publicationStatus === "published");
+export const publishedGuideSlugs = publishedGuides
+  .filter((guide) => guide.publicationStatus === "published")
+  .map((guide) => guide.slug);
+
 export function getGuide(slug: string) {
   return guides.find((guide) => guide.slug === slug);
 }

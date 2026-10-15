@@ -11,12 +11,14 @@ const navItems = [
   ["center", "center"],
   ["docs", "docs"],
   ["changelog", "changelog"],
+  ["roadmap", "roadmap"],
+  ["about", "about"],
   ["contact", "contact"],
 ] as const;
 
 export function SiteHeader({ locale }: { locale: Locale }) {
   const copy = getUi(locale);
-  const pathname = usePathname() || `/${locale}`;
+  const pathname = usePathname() || "/" + locale;
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -63,8 +65,8 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   function switchLocale(target: Locale) {
     const segments = pathname.split("/");
     if (segments[1] === "vi" || segments[1] === "en") segments[1] = target;
-    else return `/${target}`;
-    return segments.join("/") || `/${target}`;
+    else return "/" + target;
+    return segments.join("/") || "/" + target;
   }
 
   function closeMenu() {
@@ -78,7 +80,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
       </a>
       <header className="site-header">
         <div className="header-inner">
-          <Link className="wordmark" href={`/${locale}`} aria-label="VGD home">
+          <Link className="wordmark" href={"/" + locale} aria-label="VGD home">
             <span className="wordmark-symbol" aria-hidden="true">V</span>
             <span>VGD</span>
             <span className="wordmark-caption">TOOLS FOR SKETCHUP</span>
@@ -99,14 +101,14 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           <nav
             ref={menuRef}
             id="primary-navigation"
-            className={`site-nav${menuOpen ? " is-open" : ""}`}
+            className={"site-nav" + (menuOpen ? " is-open" : "")}
             aria-label={locale === "vi" ? "Điều hướng chính" : "Primary navigation"}
           >
             {navItems.map(([key, href]) => (
               <Link
                 key={key}
-                href={`/${locale}/${href}`}
-                aria-current={pathname === `/${locale}/${href}` || pathname.startsWith(`/${locale}/${href}/`) ? "page" : undefined}
+                href={"/" + locale + "/" + href}
+                aria-current={pathname === "/" + locale + "/" + href || pathname.startsWith("/" + locale + "/" + href + "/") ? "page" : undefined}
                 onClick={closeMenu}
               >
                 {copy.nav[key]}

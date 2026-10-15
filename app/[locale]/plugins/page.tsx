@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { CatalogSearch } from "@/components/catalog-search";
 import { createMetadata } from "@/lib/seo";
 import { isLocale, locales } from "@/lib/i18n";
-import { previewCatalog } from "@/lib/catalog";
+import { previewCatalog, publishedCatalog } from "@/lib/catalog";
+import { publicationReady } from "@/lib/site";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -27,5 +28,5 @@ export default async function PluginsPage({ params }: PageProps) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  return <CatalogSearch products={previewCatalog} locale={locale} />;
+  return <CatalogSearch products={publicationReady ? publishedCatalog : previewCatalog} locale={locale} />;
 }

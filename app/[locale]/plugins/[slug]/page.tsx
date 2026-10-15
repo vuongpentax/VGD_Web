@@ -7,7 +7,8 @@ import { MediaGallery } from "@/components/media-gallery";
 import { ProductSelector } from "@/components/product-selector";
 import { ReleaseBadge } from "@/components/release-badge";
 import { createMetadata } from "@/lib/seo";
-import { getProduct, previewCatalog } from "@/lib/catalog";
+import { getProduct, previewCatalog, publishedCatalog } from "@/lib/catalog";
+import { publicationReady } from "@/lib/site";
 import { isLocale, locales, getUi } from "@/lib/i18n";
 
 interface PageProps {
@@ -15,9 +16,10 @@ interface PageProps {
 }
 
 export const dynamicParams = false;
+const routeCatalog = publicationReady ? publishedCatalog : previewCatalog;
 
 export function generateStaticParams() {
-  return locales.flatMap((locale) => previewCatalog.map((product) => ({ locale, slug: product.slug })));
+  return locales.flatMap((locale) => routeCatalog.map((product) => ({ locale, slug: product.slug })));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

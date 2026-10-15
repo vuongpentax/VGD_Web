@@ -13,6 +13,13 @@ npm run dev
 
 The default route `/` redirects to Vietnamese at `/vi`. English pages are under `/en`.
 
+## Content editing
+
+- Guides live under `content/docs/vi` and `content/docs/en`. Keep the same relative Markdown path in both locales; nested folders become nested `/docs/...` routes.
+- Each guide needs `title` and `description` front matter. Optional `publication_status` accepts `draft` or `published`; it defaults to `draft`.
+- Keep the publication status and section IDs aligned between Vietnamese and English. Mark content `published` only after both translations are reviewed.
+- Preview routes remain available for review, but draft guides and products are excluded from sitemap entries.
+
 ## Preview data and release safety
 
 - `lib/catalog.ts` contains six planning-seed entries for layout preview only. They are not the final production roster or canonical registry.

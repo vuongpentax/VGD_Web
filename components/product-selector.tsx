@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
-import { previewCatalog, productTabLabel } from "@/lib/catalog";
+import { previewCatalog, publishedCatalog, productTabLabel } from "@/lib/catalog";
+import { publicationReady } from "@/lib/site";
 
 export function ProductSelector({
   locale,
@@ -9,6 +10,7 @@ export function ProductSelector({
   locale: Locale;
   activeSlug?: string;
 }) {
+  const products = publicationReady ? publishedCatalog : previewCatalog;
   return (
     <nav className="product-switcher page-width" aria-label={locale === "vi" ? "Chọn sản phẩm VGD" : "Choose a VGD product"}>
       <Link
@@ -18,7 +20,7 @@ export function ProductSelector({
       >
         {locale === "vi" ? "Tất cả" : "All"}
       </Link>
-      {previewCatalog.map((product) => (
+      {products.map((product) => (
         <Link
           className={`product-switcher-link${activeSlug === product.slug ? " is-active" : ""}`}
           href={`/${locale}/plugins/${product.slug}`}
