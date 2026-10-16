@@ -9,7 +9,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
       <div className="footer-main page-width">
         <div className="footer-brand">
           <Link className="wordmark footer-wordmark" href={`/${locale}`}>
-            <span className="wordmark-symbol" aria-hidden="true">V</span>
+            <img className="wordmark-logo" src="/brand/vgd-logo.svg" alt="" aria-hidden="true" width={29} height={29} />
             <span>VGD</span>
           </Link>
           <p>{copy.footer.note}</p>

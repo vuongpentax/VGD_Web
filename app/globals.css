@@ -32,6 +32,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid #d77743; outline-offs
 .header-inner { width: min(1380px, calc(100% - 48px)); min-height: 78px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
 .wordmark { display: inline-flex; align-items: center; gap: 9px; font-size: 22px; font-weight: 800; letter-spacing: -.07em; white-space: nowrap; }
 .wordmark-symbol { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 9px 3px 9px 3px; color: white; background: var(--green-dark); font-size: 18px; letter-spacing: -.06em; }
+.wordmark-logo { flex: none; width: 32px; height: 32px; }
 .wordmark-caption { margin-left: 3px; color: var(--muted); font-size: 8px; font-weight: 700; letter-spacing: .12em; }
 .site-nav { display: flex; align-items: center; gap: clamp(13px, 1.7vw, 25px); }
 .site-nav > a:not(.nav-cta) { color: #46524f; font-size: 12px; font-weight: 650; transition: color .18s; }
@@ -206,7 +207,7 @@ h1, h2, h3, p { margin-top: 0; }
 .footer-main { display: flex; justify-content: space-between; gap: 60px; padding-top: 43px; padding-bottom: 42px; }
 .footer-brand { max-width: 330px; }
 .footer-wordmark { font-size: 19px; }
-.footer-wordmark .wordmark-symbol { width: 29px; height: 29px; }
+.footer-wordmark .wordmark-logo { width: 29px; height: 29px; }
 .footer-brand p { margin: 13px 0 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
 .footer-links { display: flex; gap: clamp(45px, 9vw, 120px); }
 .footer-links > div { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
@@ -335,6 +336,7 @@ body { background: #dce5de; }
 }
 .wordmark { gap: 7px; font-size: 18px; letter-spacing: -.06em; }
 .wordmark-symbol { width: 30px; height: 30px; border-radius: 9px 3px 9px 3px; font-size: 17px; }
+.wordmark-logo { width: 30px; height: 30px; }
 .wordmark-caption { display: none; }
 .site-nav { flex: 1; justify-content: flex-end; gap: clamp(12px, 1.4vw, 20px); }
 .site-nav > a:not(.nav-cta) { padding: 8px 0; color: #33443a; font-size: 12px; font-weight: 700; }

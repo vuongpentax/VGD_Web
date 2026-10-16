@@ -81,7 +81,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
       <header className="site-header">
         <div className="header-inner">
           <Link className="wordmark" href={"/" + locale} aria-label="VGD home">
-            <span className="wordmark-symbol" aria-hidden="true">V</span>
+            <img className="wordmark-logo" src="/brand/vgd-logo.svg" alt="" aria-hidden="true" width={32} height={32} />
             <span>VGD</span>
             <span className="wordmark-caption">TOOLS FOR SKETCHUP</span>
           </Link>

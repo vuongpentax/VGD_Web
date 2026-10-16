@@ -103,7 +103,7 @@ Schema đề xuất trong 05_RELEASE_MANIFEST_SPEC.md định nghĩa stable prod
 | Official logo/palette | User sẽ gửi sau |
 | Screenshots/videos | User sẽ bổ sung sau |
 | VGD Center exact download URL | User sẽ bổ sung sau |
-| Canonical manifest path | User sẽ bổ sung sau; xác nhận sau repo audit |
+| Canonical manifest path | Đã chốt: `shared/vgd-center/catalog.json` trên `main` của VGD_Plugins (Center đọc trực tiếp). Chưa mở rộng sang schema 05 (thiếu `releases[]` lịch sử, `lifecycle`, `channels`); làm sau khi xác nhận Center parser chấp nhận trường bổ sung |
 | Release convention | Repo mới chưa release; user bổ sung sau |
 | Plugin roster | Đã chốt public toàn bộ production plugins; phân loại 10 folder thành plugin/manager/tooling |
 | Compatibility per plugin | Verify từ plugin owner/source |
