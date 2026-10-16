@@ -15,7 +15,7 @@ export function ProductCard({ product, locale }: { product: PreviewProduct; loca
         <span className="product-card-tiles" aria-hidden="true">
           {Array.from({ length: 8 }, (_, index) => (
             <span className={"product-card-tile" + (index === 0 ? " is-marked" : "")} key={index}>
-              {index === 0 ? monogram : ""}
+              {index === 0 ? (product.icon ? <img src={product.icon} alt="" width={40} height={40} /> : monogram) : ""}
             </span>
           ))}
         </span>

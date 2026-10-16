@@ -14,6 +14,8 @@ export interface PreviewProduct {
   name: string;
   summary: Record<Locale, string>;
   publicationStatus: "draft" | "published";
+  /** Product icon copied from VGD_Plugins. Omitted when the plugin has no dedicated icon. */
+  icon?: string;
 }
 
 const seedSummary = {
@@ -23,14 +25,14 @@ const seedSummary = {
 
 export const previewCatalog: PreviewProduct[] = [
   { id: "seed-vgd-bim-lite", slug: "bim-lite", name: "VGD BIM Lite", summary: seedSummary, publicationStatus: "draft" },
-  { id: "seed-vgd-cabinet", slug: "cabinet", name: "VGD Cabinet", summary: seedSummary, publicationStatus: "draft" },
-  { id: "seed-vgd-cabinet-draw", slug: "cabinet-draw", name: "VGD Cabinet Draw", summary: seedSummary, publicationStatus: "draft" },
-  { id: "seed-vgd-dim", slug: "dim", name: "VGD Dim", summary: seedSummary, publicationStatus: "draft" },
-  { id: "seed-vgd-image-importer", slug: "image-importer", name: "VGD Image Importer", summary: seedSummary, publicationStatus: "draft" },
-  { id: "seed-vgd-library", slug: "library", name: "VGD Library", summary: seedSummary, publicationStatus: "draft" },
+  { id: "seed-vgd-cabinet", slug: "cabinet", name: "VGD Cabinet", summary: seedSummary, publicationStatus: "draft", icon: "/products/cabinet.svg" },
+  { id: "seed-vgd-cabinet-draw", slug: "cabinet-draw", name: "VGD Cabinet Draw", summary: seedSummary, publicationStatus: "draft", icon: "/products/cabinet-draw.svg" },
+  { id: "seed-vgd-dim", slug: "dim", name: "VGD Dim", summary: seedSummary, publicationStatus: "draft", icon: "/products/dim.svg" },
+  { id: "seed-vgd-image-importer", slug: "image-importer", name: "VGD Image Importer", summary: seedSummary, publicationStatus: "draft", icon: "/products/image-importer.svg" },
+  { id: "seed-vgd-library", slug: "library", name: "VGD Library", summary: seedSummary, publicationStatus: "draft", icon: "/products/library.svg" },
   { id: "seed-vgd-package", slug: "package", name: "VGD Package", summary: seedSummary, publicationStatus: "draft" },
-  { id: "seed-vgd-reference", slug: "reference", name: "VGD Reference", summary: seedSummary, publicationStatus: "draft" },
-  { id: "seed-vgd-scenes", slug: "scenes", name: "VGD Scenes", summary: seedSummary, publicationStatus: "draft" },
+  { id: "seed-vgd-reference", slug: "reference", name: "VGD Reference", summary: seedSummary, publicationStatus: "draft", icon: "/products/reference.svg" },
+  { id: "seed-vgd-scenes", slug: "scenes", name: "VGD Scenes", summary: seedSummary, publicationStatus: "draft", icon: "/products/scenes.svg" },
 ];
 
 export const publishedCatalog = previewCatalog.filter((product) => product.publicationStatus === "published");

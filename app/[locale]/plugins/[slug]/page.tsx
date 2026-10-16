@@ -46,7 +46,11 @@ export default async function ProductPage({ params }: PageProps) {
       <ProductSelector locale={locale} activeSlug={slug} />
       <section className="product-detail-hero page-width">
         <div className="product-detail-art">
-          <ConceptArtwork locale={locale} subject={product.name} />
+          {product.icon ? (
+            <img className="product-detail-icon" src={product.icon} alt="" width={180} height={180} />
+          ) : (
+            <ConceptArtwork locale={locale} subject={product.name} />
+          )}
         </div>
         <div className="product-detail-copy">
           <Link className="back-link" href={"/" + locale + "/plugins"}>← {copy.backToPlugins}</Link>
