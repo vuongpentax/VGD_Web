@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ProductCard } from "@/components/product-card";
+import { ScrollRail } from "@/components/scroll-rail";
 import { productTabLabel, type PreviewProduct } from "@/lib/catalog";
 import type { Locale } from "@/lib/i18n";
 import { getUi } from "@/lib/i18n";
@@ -21,7 +22,7 @@ export function CatalogSearch({ products, locale }: { products: PreviewProduct[]
 
   return (
     <div className="catalog-wrap page-width">
-      <nav className="catalog-filters" aria-label={locale === "vi" ? "Lọc theo sản phẩm" : "Filter by product"}>
+      <ScrollRail className="catalog-filters" label={locale === "vi" ? "Lọc theo sản phẩm" : "Filter by product"}>
         <button className={"product-pill" + (activeProduct === null ? " product-pill-active" : "")} type="button" aria-pressed={activeProduct === null} onClick={() => setActiveProduct(null)}>
           {locale === "vi" ? "Tất cả" : "All"}
         </button>
@@ -36,7 +37,7 @@ export function CatalogSearch({ products, locale }: { products: PreviewProduct[]
             {productTabLabel(product)}
           </button>
         ))}
-      </nav>
+      </ScrollRail>
       <header className="catalog-intro">
         <p className="eyebrow">{locale === "vi" ? "DANH MỤC VGD · PREVIEW" : "VGD CATALOG · PREVIEW"}</p>
         <h1>{locale === "vi" ? "Công cụ cho workflow của bạn" : "Tools for your workflow"}</h1>

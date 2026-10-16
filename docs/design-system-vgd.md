@@ -1,12 +1,14 @@
-# VGD interface design system — XSU skill implementation
+# VGD interface design system
 
 ## Context and goals
 
-This document applies the exact style foundations in `.agents/skills/design-system/SKILL.md` to VGD's Phase 1 website. It covers the public discovery interface; it does not introduce the authenticated dashboard, account, payment, or license flows described in the source skill's XSU context. VGD remains the product identity, and VGD Center remains the SketchUp installation manager. The nine planning files in `docs/planning/` continue to govern content and release behavior.
+This document records the style foundations of VGD's Phase 1 website. It covers the public discovery interface; it does not introduce the authenticated dashboard, account, payment, or license flows. VGD remains the product identity, and VGD Center remains the SketchUp installation manager. The nine planning files in `docs/planning/` continue to govern content and release behavior.
+
+The layout rhythm — the framed shell, the pill rail, the two-column showcase, the flat cards — came from a supplied external skill. **The colour palette is VGD's own green**, not that skill's monochrome. Keep it that way: the skill file is not part of this repository, so these tables are the source of truth.
 
 ## Design tokens and foundations
 
-The values below are copied as tokens from the supplied skill. Components must reference tokens rather than embedding palette values.
+Components must reference tokens rather than embedding palette values. The tokens live in `app/design-system.css`.
 
 | Family | Token | Value |
 | --- | --- | --- |
@@ -16,15 +18,23 @@ The values below are copied as tokens from the supplied skill. Components must r
 | Font | `font.weight.base` | 400 |
 | Font | `font.lineHeight.base` | 28.6684px |
 | Type | `font.size.xs / sm / md / lg / xl` | 13 / 15 / 20.48 / 34 / 36px |
-| Surface | `color.surface.base` | #000000 |
-| Text | `color.text.secondary / tertiary` | #111111 / #666666 |
-| Border | `color.border.muted` | #cccccc |
-| Surface | `color.surface.muted / raised / strong` | #ffffff / #1d1d1d / #aaaaaa |
+| Text | `color.text.primary / secondary / tertiary` | #18211f / #3f4c48 / #5c6863 |
+| Accent | `color.accent / accent.hover / accent.soft` | #174d3b / #23664d / #e9f3ed |
+| Accent | `color.on.accent / on.accent.muted` | #ffffff / #d0ded5 |
+| Border | `color.border.muted / strong` | #d8e1db / #7f8f87 |
+| Surface | `color.surface.muted / page / strong` | #ffffff / #f6f9f7 / #ccd9ce |
+| State | `color.focus / danger` | #b8521f / #b3261e |
 | Space | `space.1 / 2 / 3 / 4 / 5 / 6` | 6 / 8 / 10 / 15 / 16 / 20px |
 | Space | `space.7 / 8` | 32.19 / 32.2px |
 | Radius | `radius.xs / sm / md` | 8 / 24 / 360px |
 
-Manrope is bundled locally through `@fontsource-variable/manrope`, including Vietnamese glyphs. The desktop canvas must use the strong gray surface, the site shell must use the white muted surface, and primary actions must use the raised dark surface. The VGD wordmark and product copy must remain VGD's own.
+Manrope is bundled locally through `@fontsource-variable/manrope`, including Vietnamese glyphs. The desktop canvas uses the strong green surface, the site shell uses the white muted surface, and primary actions use the accent with `color.on.accent` text. The VGD wordmark and product copy must remain VGD's own.
+
+### Colour rules
+
+- Every text token above meets WCAG AA (4.5:1) on the surfaces it is paired with; `border.strong` and `focus` meet 3:1 for controls. `tests/contrast.spec.ts` measures this on every page and fails the build if a pairing drops below the threshold.
+- `color.accent` is an accent, never half of a pair with another dark colour. Dark-on-dark and white-on-white are exactly how the About panel and the docs sidebar once lost their text.
+- `font.lineHeight.base` is a fixed pixel value, so any display-size heading must declare its own unitless `line-height` or it will collapse onto the text below.
 
 ## Component-level rules
 

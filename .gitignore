@@ -13,3 +13,5 @@ coverage/
 *.key
 *.p12
 *.pfx
+test-results/
+playwright-report/

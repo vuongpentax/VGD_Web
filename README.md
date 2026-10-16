@@ -39,3 +39,16 @@ Copy `.env.example` to `.env.local` for local configuration. Leave publication s
 ```sh
 npm run build
 ```
+
+## Checks
+
+```sh
+npm run lint        # ESLint (Next.js core-web-vitals + TypeScript rules)
+npm run typecheck   # tsc --noEmit
+npm run test:e2e    # Playwright checks against a production build
+npm run check       # all of the above
+```
+
+On a new machine, install the test browser once with `npx playwright install chromium`.
+
+`tests/smoke.spec.ts` covers routing, the localized 404, release-safety rules (no invented versions, no download links), navigation, the catalog filters, the mobile menu and responsive overflow. `tests/contrast.spec.ts` measures every visible run of text against the background painted behind it and fails below WCAG AA, which is what catches text made invisible by a colour-token change.

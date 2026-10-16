@@ -2,9 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { Locale } from "@/lib/i18n";
 import { getUi } from "@/lib/i18n";
+
+function subscribeToLocation(onChange: () => void) {
+  window.addEventListener("hashchange", onChange);
+  window.addEventListener("popstate", onChange);
+  return () => {
+    window.removeEventListener("hashchange", onChange);
+    window.removeEventListener("popstate", onChange);
+  };
+}
+
+function readUrlSuffix() {
+  return window.location.search + window.location.hash;
+}
 
 const navItems = [
   ["plugins", "plugins"],
@@ -16,9 +29,18 @@ const navItems = [
   ["contact", "contact"],
 ] as const;
 
-export function SiteHeader({ locale }: { locale: Locale }) {
+export function SiteHeader({
+  locale,
+  languageLinksToHome = false,
+}: {
+  locale: Locale;
+  /** On a 404 the current path exists in neither locale, so VI/EN go home. */
+  languageLinksToHome?: boolean;
+}) {
   const copy = getUi(locale);
   const pathname = usePathname() || "/" + locale;
+  // Read on the client only, so the statically rendered pages stay static.
+  const urlSuffix = useSyncExternalStore(subscribeToLocation, readUrlSuffix, () => "");
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -64,9 +86,9 @@ export function SiteHeader({ locale }: { locale: Locale }) {
 
   function switchLocale(target: Locale) {
     const segments = pathname.split("/");
-    if (segments[1] === "vi" || segments[1] === "en") segments[1] = target;
-    else return "/" + target;
-    return segments.join("/") || "/" + target;
+    if (languageLinksToHome || (segments[1] !== "vi" && segments[1] !== "en")) return "/" + target;
+    segments[1] = target;
+    return (segments.join("/") || "/" + target) + urlSuffix;
   }
 
   function closeMenu() {

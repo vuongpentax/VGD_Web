@@ -5,7 +5,7 @@ import { ConceptArtwork } from "@/components/concept-artwork";
 import { PageIntro } from "@/components/page-intro";
 import { StatusState } from "@/components/status-state";
 import { createMetadata } from "@/lib/seo";
-import { isLocale, type Locale } from "@/lib/i18n";
+import { isLocale } from "@/lib/i18n";
 
 interface PageProps { params: Promise<{ locale: string }> }
 
