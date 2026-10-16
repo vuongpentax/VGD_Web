@@ -8,13 +8,26 @@
   --ds-font-md: 20.48px;
   --ds-font-lg: 34px;
   --ds-font-xl: 36px;
-  --ds-color-surface-base: #000000;
-  --ds-color-text-secondary: #111111;
-  --ds-color-text-tertiary: #666666;
-  --ds-color-border-muted: #cccccc;
+  /* VGD green palette. Every text token below meets WCAG AA (>= 4.5:1) on the
+     surfaces it is used with; border-strong and focus meet 3:1 for controls. */
+  --ds-color-text-primary: #18211f;
+  --ds-color-text-secondary: #3f4c48;
+  --ds-color-text-tertiary: #5c6863;
+  --ds-color-accent: #174d3b;
+  --ds-color-accent-hover: #23664d;
+  --ds-color-accent-soft: #e9f3ed;
+  --ds-color-on-accent: #ffffff;
+  --ds-color-on-accent-muted: #d0ded5;
+  --ds-color-border-muted: #d8e1db;
+  --ds-color-border-strong: #7f8f87;
   --ds-color-surface-muted: #ffffff;
-  --ds-color-surface-raised: #1d1d1d;
-  --ds-color-surface-strong: #aaaaaa;
+  --ds-color-surface-page: #f6f9f7;
+  --ds-color-surface-raised: var(--ds-color-accent);
+  --ds-color-surface-strong: #ccd9ce;
+  --ds-color-focus: #b8521f;
+  --ds-color-danger: #b3261e;
+  /* Legacy alias: the brand accent. Never pair it with another dark colour. */
+  --ds-color-surface-base: var(--ds-color-accent);
   --ds-space-1: 6px;
   --ds-space-2: 8px;
   --ds-space-3: 10px;
@@ -28,18 +41,18 @@
   --ds-radius-md: 360px;
 
   /* Existing page components consume these semantic aliases. */
-  --ink: var(--ds-color-text-secondary);
-  --ink-soft: var(--ds-color-text-tertiary);
+  --ink: var(--ds-color-text-primary);
+  --ink-soft: var(--ds-color-text-secondary);
   --muted: var(--ds-color-text-tertiary);
   --line: var(--ds-color-border-muted);
-  --paper: var(--ds-color-surface-muted);
+  --paper: var(--ds-color-surface-page);
   --white: var(--ds-color-surface-muted);
-  --green: var(--ds-color-surface-raised);
-  --green-dark: var(--ds-color-surface-raised);
-  --green-soft: var(--ds-color-surface-muted);
-  --orange: var(--ds-color-text-tertiary);
+  --green: var(--ds-color-accent);
+  --green-dark: var(--ds-color-accent);
+  --green-soft: var(--ds-color-accent-soft);
+  --orange: var(--ds-color-focus);
   --surface: var(--ds-color-surface-muted);
-  --surface-soft: var(--ds-color-surface-muted);
+  --surface-soft: var(--ds-color-surface-page);
   --radius-card: var(--ds-radius-xs);
   --radius-panel: var(--ds-radius-sm);
   --type-caption: var(--ds-font-xs);
@@ -47,21 +60,21 @@
   --type-body-sm: var(--ds-font-sm);
   --type-body: var(--ds-font-sm);
   --type-action: var(--ds-font-sm);
-  --focus-ring: var(--ds-color-surface-base);
+  --focus-ring: var(--ds-color-focus);
   --max-width: 832px;
 }
 
 html { background: var(--ds-color-surface-strong); }
 body {
   background: var(--ds-color-surface-strong);
-  color: var(--ds-color-text-secondary);
+  color: var(--ds-color-text-primary);
   font-family: var(--ds-font-family);
   font-size: var(--ds-font-base);
   font-weight: 400;
   line-height: var(--ds-line-base);
 }
 a:focus-visible, button:focus-visible, input:focus-visible {
-  outline: 3px solid var(--ds-color-surface-base);
+  outline: 3px solid var(--ds-color-focus);
   outline-offset: 3px;
 }
 .site-shell {
@@ -75,24 +88,25 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .page-width, .header-inner { width: min(var(--max-width), calc(100% - 88px)); }
 .site-header { border-radius: var(--ds-radius-sm) var(--ds-radius-sm) 0 0; background: var(--ds-color-surface-muted); }
 .header-inner { min-height: 72px; }
-.wordmark { color: var(--ds-color-surface-base); }
+.wordmark { color: var(--ds-color-text-primary); }
 .wordmark-symbol {
   border-radius: var(--ds-radius-xs);
-  background: var(--ds-color-surface-base);
-  color: var(--ds-color-surface-muted);
+  background: var(--ds-color-accent);
+  color: var(--ds-color-on-accent);
 }
 .site-nav > a:not(.nav-cta) { color: var(--ds-color-text-secondary); font-size: var(--ds-font-xs); }
-.site-nav > a:hover:not(.nav-cta), .site-nav > a[aria-current="page"]:not(.nav-cta) { color: var(--ds-color-surface-base); }
+.site-nav > a:hover:not(.nav-cta), .site-nav > a[aria-current="page"]:not(.nav-cta) { color: var(--ds-color-accent); }
 .language-switch { border-color: var(--ds-color-border-muted); border-radius: var(--ds-radius-md); color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); }
-.language-switch a[aria-current="page"] { color: var(--ds-color-surface-base); }
+.language-switch a[aria-current="page"] { color: var(--ds-color-accent); }
 .preview-notice {
   min-height: 37px;
   border-color: var(--ds-color-border-muted);
-  background: var(--ds-color-surface-muted);
-  color: var(--ds-color-text-tertiary);
+  background: var(--ds-color-accent-soft);
+  color: var(--ds-color-text-secondary);
   font-size: var(--ds-font-xs);
 }
-.notice-dot, .status-dot { background: var(--ds-color-text-tertiary); }
+.notice-dot { background: var(--ds-color-accent); }
+.status-dot { background: var(--ds-color-focus); }
 
 .product-switcher, .catalog-filters {
   width: min(770px, calc(100% - 88px));
@@ -103,8 +117,16 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   border-color: var(--ds-color-border-muted);
   border-radius: var(--ds-radius-md);
   background: var(--ds-color-surface-muted);
-  scrollbar-color: var(--ds-color-surface-strong) transparent;
+  scrollbar-color: var(--ds-color-border-strong) transparent;
+  /* The rail scrolls when the names do not fit. Fade the trailing edge so a
+     clipped name reads as "more to the right" instead of as a typo. */
+  scroll-padding-inline: var(--ds-space-4);
+  scroll-snap-type: inline proximity;
 }
+.product-switcher[data-overflowing="true"], .catalog-filters[data-overflowing="true"] {
+  mask-image: linear-gradient(to right, #000 calc(100% - 44px), transparent 100%);
+}
+.product-switcher-link, .catalog-filters .product-pill { scroll-snap-align: center; scroll-margin-inline: var(--ds-space-6); }
 .product-switcher-link, .catalog-filters .product-pill {
   min-height: 54px;
   padding-inline: var(--ds-space-4);
@@ -113,14 +135,17 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   font-size: var(--ds-font-md);
   font-weight: 700;
 }
-.product-switcher-link:hover, .catalog-filters .product-pill:hover,
+.product-switcher-link:hover, .catalog-filters .product-pill:hover {
+  color: var(--ds-color-accent);
+  background: var(--ds-color-surface-page);
+}
 .product-switcher-link.is-active, .catalog-filters .product-pill-active,
 .catalog-filters .product-pill-active:hover {
-  color: var(--ds-color-surface-base);
-  background: var(--ds-color-surface-muted);
+  color: var(--ds-color-accent);
+  background: var(--ds-color-accent-soft);
 }
 .product-switcher-link.is-active, .catalog-filters .product-pill-active { font-weight: 800; }
-.product-switcher-link:focus-visible, .catalog-filters .product-pill:focus-visible { outline-color: var(--ds-color-surface-base); }
+.product-switcher-link:focus-visible, .catalog-filters .product-pill:focus-visible { outline-color: var(--ds-color-focus); }
 
 .showcase-section { padding-bottom: var(--ds-space-8); }
 .showcase-kicker { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); }
@@ -131,28 +156,28 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   border-color: var(--ds-color-border-muted);
   border-radius: var(--ds-radius-xs);
   background: var(--ds-color-surface-muted);
-  color: var(--ds-color-surface-base);
+  color: var(--ds-color-accent);
 }
 .concept-art-tile.is-marked, .product-card-tile.is-marked {
-  border-color: var(--ds-color-surface-base);
-  background: var(--ds-color-surface-muted);
+  border-color: var(--ds-color-accent);
+  background: var(--ds-color-accent-soft);
 }
 .concept-art-caption, .concept-art-caption span:first-child { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); }
-.showcase-product h1, .showcase-center h2 { color: var(--ds-color-surface-base); font-size: var(--ds-font-lg); }
+.showcase-product h1, .showcase-center h2 { color: var(--ds-color-text-primary); font-size: var(--ds-font-lg); }
 .showcase-description { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); }
-.showcase-text-link, .arrow-link, .text-link { color: var(--ds-color-surface-base); font-size: var(--ds-font-xs); }
+.showcase-text-link, .arrow-link, .text-link { color: var(--ds-color-accent); font-size: var(--ds-font-xs); }
 .showcase-button, .button-primary, .product-card-bottom .arrow-link {
   border-radius: var(--ds-radius-md);
-  background: var(--ds-color-surface-raised);
-  color: var(--ds-color-surface-muted);
+  background: var(--ds-color-accent);
+  color: var(--ds-color-on-accent);
   font-size: var(--ds-font-sm);
 }
-.showcase-button:hover, .button-primary:hover, .product-card-bottom .arrow-link:hover { background: var(--ds-color-surface-base); }
+.showcase-button:hover, .button-primary:hover, .product-card-bottom .arrow-link:hover { background: var(--ds-color-accent-hover); }
 .showcase-note, .showcase-steps span, .pending-copy { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); }
-.showcase-steps strong { color: var(--ds-color-surface-base); font-size: var(--ds-font-lg); }
+.showcase-steps strong { color: var(--ds-color-accent); font-size: var(--ds-font-lg); }
 .eyebrow { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); letter-spacing: .08em; }
 .section-block, .product-detail-copy, .detail-layout, .content-section-border { border-color: var(--ds-color-border-muted); }
-.section-heading h2, .center-feature h2 { color: var(--ds-color-surface-base); font-size: var(--ds-font-lg); }
+.section-heading h2, .center-feature h2 { color: var(--ds-color-text-primary); font-size: var(--ds-font-lg); }
 
 .product-card, .doc-card, .detail-aside, .release-empty, .roadmap-empty,
 .contact-panel, .about-panel, .bottom-link-card {
@@ -161,7 +186,12 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   background: var(--ds-color-surface-muted);
   box-shadow: none;
 }
-.product-card:hover, .doc-card:hover { border-color: var(--ds-color-surface-base); box-shadow: none; }
+.product-card:hover, .doc-card:hover { border-color: var(--ds-color-accent); box-shadow: none; }
+/* The About page pairs one accent panel with one light panel. The generic
+   .about-panel rule above would otherwise make both white, hiding this one. */
+.about-panel-dark { border-color: var(--ds-color-accent); background: var(--ds-color-accent); color: var(--ds-color-on-accent); }
+.about-panel-dark h2 { color: var(--ds-color-on-accent); }
+.about-panel-dark .eyebrow, .about-panel-dark p { color: var(--ds-color-on-accent-muted); }
 .product-card-media, .center-page-hero .concept-art {
   border-color: var(--ds-color-border-muted);
   background: var(--ds-color-surface-muted);
@@ -169,35 +199,37 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .product-card-media-label, .product-card-media-note { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); line-height: 1.3; }
 .product-card-top, .product-card-bottom, .status-list > div { border-color: var(--ds-color-border-muted); }
 .status-pill { border-color: var(--ds-color-border-muted); border-radius: var(--ds-radius-md); color: var(--ds-color-text-tertiary); background: var(--ds-color-surface-muted); font-size: var(--ds-font-xs); }
-.product-card h3 { color: var(--ds-color-surface-base); font-size: var(--ds-font-md); }
+.product-card h3 { color: var(--ds-color-text-primary); font-size: var(--ds-font-md); }
 .product-card-copy p { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); }
 .product-card-bottom .arrow-link { min-height: 50px; }
-.catalog-intro h1, .page-intro h1, .product-detail-copy h1 { color: var(--ds-color-surface-base); font-size: var(--ds-font-xl); }
+.catalog-intro h1, .page-intro h1, .product-detail-copy h1 { color: var(--ds-color-text-primary); font-size: var(--ds-font-xl); }
 .catalog-intro p:not(.eyebrow), .intro-copy, .product-detail-copy .intro-copy,
 .content-section > p:not(.eyebrow), .center-feature-intro > p:not(.eyebrow) { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-sm); }
 .catalog-tools { border-color: var(--ds-color-border-muted); }
 .catalog-count, .product-detail-note, .aside-note { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); }
-.search-field input { border-color: var(--ds-color-border-muted); border-radius: var(--ds-radius-md); color: var(--ds-color-text-secondary); font-size: var(--ds-font-sm); }
-.search-field input:focus { border-color: var(--ds-color-surface-base); box-shadow: 0 0 0 2px var(--ds-color-border-muted); }
+.search-field input { border-color: var(--ds-color-border-strong); border-radius: var(--ds-radius-md); color: var(--ds-color-text-primary); font-size: var(--ds-font-sm); }
+.search-field input:focus { border-color: var(--ds-color-accent); box-shadow: 0 0 0 3px var(--ds-color-accent-soft); }
 .product-quick-facts > div { border-color: var(--ds-color-border-muted); border-radius: var(--ds-radius-xs); }
 .product-quick-facts span, .status-list dt { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); }
 .product-quick-facts strong, .status-list dd { color: var(--ds-color-text-secondary); font-size: var(--ds-font-xs); }
 .product-detail-button { min-height: 54px; }
 .back-link { color: var(--ds-color-text-tertiary); }
-.back-link:hover { color: var(--ds-color-surface-base); }
+.back-link:hover { color: var(--ds-color-accent); }
 .center-steps, .center-step, .guide-callout { border-color: var(--ds-color-border-muted); }
 .center-steps, .guide-callout, .bottom-link-card { background: var(--ds-color-surface-muted); }
-.center-step strong, .content-section h2, .bottom-link-card strong { color: var(--ds-color-surface-base); }
+.center-step strong, .content-section h2, .bottom-link-card strong { color: var(--ds-color-text-primary); }
 .center-step > div span, .guide-callout > span, .bottom-link-card > span:last-child { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); }
-.step-arrow, .doc-arrow, .bottom-link-card i { color: var(--ds-color-text-secondary); }
-.button-secondary, .button-disabled { border-color: var(--ds-color-border-muted); border-radius: var(--ds-radius-md); color: var(--ds-color-text-secondary); background: var(--ds-color-surface-muted); }
+.step-arrow, .doc-arrow, .bottom-link-card i { color: var(--ds-color-accent); }
+.button-secondary { border-color: var(--ds-color-border-strong); border-radius: var(--ds-radius-md); color: var(--ds-color-accent); background: var(--ds-color-surface-muted); }
+.button-secondary:hover { border-color: var(--ds-color-accent); background: var(--ds-color-accent-soft); }
+.button-disabled { border-color: var(--ds-color-border-muted); border-radius: var(--ds-radius-md); color: var(--ds-color-text-tertiary); background: var(--ds-color-surface-page); }
 .site-footer { border-radius: 0 0 var(--ds-radius-sm) var(--ds-radius-sm); border-color: var(--ds-color-border-muted); background: var(--ds-color-surface-muted); }
-.footer-links a:hover { color: var(--ds-color-surface-base); }
+.footer-links a:hover { color: var(--ds-color-accent); }
 .empty-state, .search-result-empty { border-color: var(--ds-color-border-muted); background: var(--ds-color-surface-muted); color: var(--ds-color-text-tertiary); }
 
 .button[aria-busy="true"], button[aria-busy="true"] { cursor: progress; opacity: .7; }
 .button[aria-disabled="true"], .button:disabled, button:disabled { cursor: not-allowed; opacity: .55; }
-[aria-invalid="true"] { border-color: var(--ds-color-surface-base) !important; }
+[aria-invalid="true"] { border-color: var(--ds-color-danger) !important; }
 [role="alert"] { color: var(--ds-color-text-secondary); }
 
 @media (max-width: 900px) {
@@ -235,8 +267,8 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .compatibility-row > span { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); }
 .compatibility-row > strong { color: var(--ds-color-text-secondary); font-size: var(--ds-font-xs); }
 .status-state, .changelog-entry { border-color: var(--ds-color-border-muted); border-radius: var(--ds-radius-xs); background: var(--ds-color-surface-muted); }
-.status-state-icon { border-radius: var(--ds-radius-xs); color: var(--ds-color-surface-base); background: var(--ds-color-surface-muted); }
-.status-state-title, .changelog-entry-header h2, .changelog-entry-group h3 { color: var(--ds-color-surface-base); }
+.status-state-icon { border-radius: var(--ds-radius-xs); color: var(--ds-color-accent); background: var(--ds-color-accent-soft); }
+.status-state-title, .changelog-entry-header h2, .changelog-entry-group h3 { color: var(--ds-color-text-primary); }
 .status-state-description, .changelog-entry-date, .changelog-entry-group ul, .media-gallery-item figcaption { color: var(--ds-color-text-tertiary); }
 .media-gallery-frame, .media-gallery-empty, .media-gallery-error { border-color: var(--ds-color-border-muted); border-radius: var(--ds-radius-xs); background: var(--ds-color-surface-muted); }
 .changelog-entry { box-shadow: none; }
@@ -315,10 +347,14 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
-.guide-sidebar a:hover,
+.guide-sidebar a:hover {
+  color: var(--ds-color-accent);
+  background: var(--ds-color-surface-page);
+}
 .guide-sidebar a[aria-current="page"] {
-  color: var(--ds-color-text-secondary);
-  background: var(--ds-color-surface-base);
+  color: var(--ds-color-accent);
+  background: var(--ds-color-accent-soft);
+  font-weight: 700;
 }
 .guide-callout {
   grid-column: auto;
@@ -345,7 +381,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   background: var(--ds-color-surface-muted);
 }
 .guide-pagination > a:last-child { text-align: right; }
-.guide-pagination > a:hover { border-color: var(--ds-color-text-secondary); }
+.guide-pagination > a:hover { border-color: var(--ds-color-accent); }
 .guide-pagination > a span { color: var(--ds-color-text-tertiary); font-size: var(--ds-font-xs); }
 .guide-pagination > a strong { font-size: var(--ds-font-sm); overflow-wrap: anywhere; }
 .guide-pagination-empty { min-height: 1px; }

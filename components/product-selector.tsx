@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ScrollRail } from "@/components/scroll-rail";
 import type { Locale } from "@/lib/i18n";
 import { previewCatalog, publishedCatalog, productTabLabel } from "@/lib/catalog";
 import { publicationReady } from "@/lib/site";
@@ -12,7 +13,7 @@ export function ProductSelector({
 }) {
   const products = publicationReady ? publishedCatalog : previewCatalog;
   return (
-    <nav className="product-switcher page-width" aria-label={locale === "vi" ? "Chọn sản phẩm VGD" : "Choose a VGD product"}>
+    <ScrollRail className="product-switcher page-width" label={locale === "vi" ? "Chọn sản phẩm VGD" : "Choose a VGD product"}>
       <Link
         className={`product-switcher-link${!activeSlug ? " is-active" : ""}`}
         href={`/${locale}/plugins`}
@@ -30,6 +31,6 @@ export function ProductSelector({
           {productTabLabel(product)}
         </Link>
       ))}
-    </nav>
+    </ScrollRail>
   );
 }

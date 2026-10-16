@@ -34,7 +34,7 @@ export default async function GuidePage({ params }: PageProps) {
   const vi = locale === "vi";
   const visibleGuides = publicationReady ? publishedGuides : guides;
   const currentIndex = visibleGuides.findIndex((item) => item.slug === guide.slug);
-  const previousGuide = currentIndex > 0 ? guides[currentIndex - 1] : undefined;
+  const previousGuide = currentIndex > 0 ? visibleGuides[currentIndex - 1] : undefined;
   const nextGuide = currentIndex >= 0 && currentIndex < visibleGuides.length - 1 ? visibleGuides[currentIndex + 1] : undefined;
   const localizedPath = (targetSlug: string) =>
     "/" + locale + "/docs/" + targetSlug.split("/").map(encodeURIComponent).join("/");
