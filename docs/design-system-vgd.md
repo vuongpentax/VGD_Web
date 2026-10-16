@@ -12,17 +12,19 @@ The values below are copied as tokens from the supplied skill. Components must r
 | --- | --- | --- |
 | Font | `font.family.primary` | Manrope |
 | Font | `font.family.stack` | Manrope, sans-serif |
-| Font | `font.size.base` | 20.4774px |
+| Font | `font.size.base` | 22px |
 | Font | `font.weight.base` | 400 |
-| Font | `font.lineHeight.base` | 28.6684px |
-| Type | `font.size.xs / sm / md / lg / xl` | 13 / 15 / 20.48 / 34 / 36px |
+| Font | `font.lineHeight.base` | 30.8px |
+| Type | `font.size.xs / sm / md / lg / xl` | 13 / 15 / 22 / 34 / 36px |
+| Type | `font.size.2xs / title.sm / title.md` | 11 / 26 / 32px (observed on xsu.vn, not in source skill) |
 | Surface | `color.surface.base` | #000000 |
 | Text | `color.text.secondary / tertiary` | #111111 / #666666 |
 | Border | `color.border.muted` | #cccccc |
 | Surface | `color.surface.muted / raised / strong` | #ffffff / #1d1d1d / #aaaaaa |
 | Space | `space.1 / 2 / 3 / 4 / 5 / 6` | 6 / 8 / 10 / 15 / 16 / 20px |
-| Space | `space.7 / 8` | 32.19 / 32.2px |
+| Space | `space.7 / 8` | 44.25 / 45px |
 | Radius | `radius.xs / sm / md` | 8 / 24 / 360px |
+| Radius | `radius.2xs / 12 / 16` | 4 / 12 / 16px (observed on xsu.vn, not in source skill) |
 
 Manrope is bundled locally through `@fontsource-variable/manrope`, including Vietnamese glyphs. The desktop canvas must use the strong gray surface, the site shell must use the white muted surface, and primary actions must use the raised dark surface. The VGD wordmark and product copy must remain VGD's own.
 

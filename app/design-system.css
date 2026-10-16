@@ -1,13 +1,17 @@
 :root {
-  /* Values from .agents/skills/design-system/SKILL.md */
+  /* Values from the XSU design-system guidance (Design.md) */
   --ds-font-family: "Manrope Variable", Manrope, sans-serif;
-  --ds-font-base: 20.4774px;
-  --ds-line-base: 28.6684px;
+  --ds-font-base: 22px;
+  --ds-line-base: 30.8px;
   --ds-font-xs: 13px;
   --ds-font-sm: 15px;
-  --ds-font-md: 20.48px;
+  --ds-font-md: 22px;
   --ds-font-lg: 34px;
   --ds-font-xl: 36px;
+  /* Observed on xsu.vn at 1440px; not yet in Design.md. */
+  --ds-font-2xs: 11px;
+  --ds-font-title-sm: 26px;
+  --ds-font-title-md: 32px;
   --ds-color-surface-base: #000000;
   --ds-color-text-secondary: #111111;
   --ds-color-text-tertiary: #666666;
@@ -21,11 +25,15 @@
   --ds-space-4: 15px;
   --ds-space-5: 16px;
   --ds-space-6: 20px;
-  --ds-space-7: 32.19px;
-  --ds-space-8: 32.2px;
+  --ds-space-7: 44.25px;
+  --ds-space-8: 45px;
   --ds-radius-xs: 8px;
   --ds-radius-sm: 24px;
   --ds-radius-md: 360px;
+  /* Observed on xsu.vn at 1440px; not yet in Design.md. */
+  --ds-radius-2xs: 4px;
+  --ds-radius-12: 12px;
+  --ds-radius-16: 16px;
 
   /* Existing page components consume these semantic aliases. */
   --ink: var(--ds-color-text-secondary);
@@ -239,7 +247,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .status-state-title, .changelog-entry-header h2, .changelog-entry-group h3 { color: var(--ds-color-surface-base); }
 .status-state-description, .changelog-entry-date, .changelog-entry-group ul, .media-gallery-item figcaption { color: var(--ds-color-text-tertiary); }
 .media-gallery-frame, .media-gallery-empty, .media-gallery-error { border-color: var(--ds-color-border-muted); border-radius: var(--ds-radius-xs); background: var(--ds-color-surface-muted); }
-.changelog-entry { box-shadow: none; }
+.changelog-entry { border-radius: var(--ds-radius-12); box-shadow: none; }
 
 .guide-breadcrumbs {
   margin-top: 21px;
