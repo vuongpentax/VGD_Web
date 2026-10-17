@@ -13,7 +13,8 @@ export function localized(vi: string, en: string, locale: Locale): string {
 export const ui = {
   vi: {
     nav: {
-      plugins: "Plugin",
+      home: "Trang chủ",
+      plugins: "Tiện ích",
       center: "VGD Center",
       docs: "Tài liệu",
       changelog: "Cập nhật",
@@ -45,6 +46,7 @@ export const ui = {
   },
   en: {
     nav: {
+      home: "Home",
       plugins: "Plugins",
       center: "VGD Center",
       docs: "Docs",

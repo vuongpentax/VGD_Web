@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
-import { previewCatalog, publishedCatalog, productTabLabel } from "@/lib/catalog";
+import { previewCatalog, productPath, productShortName, publishedCatalog } from "@/lib/catalog";
 import { publicationReady } from "@/lib/site";
+import { ScrollRail } from "@/components/scroll-rail";
 
 export function ProductSelector({
   locale,
@@ -12,24 +13,19 @@ export function ProductSelector({
 }) {
   const products = publicationReady ? publishedCatalog : previewCatalog;
   return (
-    <nav className="product-switcher page-width" aria-label={locale === "vi" ? "Chọn sản phẩm VGD" : "Choose a VGD product"}>
-      <Link
-        className={`product-switcher-link${!activeSlug ? " is-active" : ""}`}
-        href={`/${locale}/plugins`}
-        aria-current={!activeSlug ? "page" : undefined}
-      >
-        {locale === "vi" ? "Tất cả" : "All"}
-      </Link>
-      {products.map((product) => (
-        <Link
-          className={`product-switcher-link${activeSlug === product.slug ? " is-active" : ""}`}
-          href={`/${locale}/plugins/${product.slug}`}
-          aria-current={activeSlug === product.slug ? "page" : undefined}
-          key={product.id}
-        >
-          {productTabLabel(product)}
-        </Link>
-      ))}
-    </nav>
+    <ScrollRail locale={locale}>
+      <nav className="rail-list" aria-label={locale === "vi" ? "Chọn sản phẩm VGD" : "Choose a VGD product"}>
+        {products.map((product) => (
+          <Link
+            className={`rail-item${activeSlug === product.slug ? " is-active" : ""}`}
+            href={`/${locale}${productPath(product)}`}
+            aria-current={activeSlug === product.slug ? "page" : undefined}
+            key={product.id}
+          >
+            {productShortName(product)}
+          </Link>
+        ))}
+      </nav>
+    </ScrollRail>
   );
 }

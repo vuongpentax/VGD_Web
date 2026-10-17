@@ -8,6 +8,7 @@ import { ProductSelector } from "@/components/product-selector";
 import { ReleaseBadge } from "@/components/release-badge";
 import { createMetadata } from "@/lib/seo";
 import { getProduct, previewCatalog, publishedCatalog } from "@/lib/catalog";
+import { withReleases } from "@/lib/catalog-releases";
 import { publicationReady } from "@/lib/site";
 import { isLocale, locales, getUi } from "@/lib/i18n";
 
@@ -16,7 +17,8 @@ interface PageProps {
 }
 
 export const dynamicParams = false;
-const routeCatalog = publicationReady ? publishedCatalog : previewCatalog;
+// Products with their own page (VGD Center) are not generated under /plugins/[slug].
+const routeCatalog = (publicationReady ? publishedCatalog : previewCatalog).filter((product) => !product.href);
 
 export function generateStaticParams() {
   return locales.flatMap((locale) => routeCatalog.map((product) => ({ locale, slug: product.slug })));
@@ -36,8 +38,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ProductPage({ params }: PageProps) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
-  const product = getProduct(slug);
-  if (!product) notFound();
+  const seed = getProduct(slug);
+  if (!seed) notFound();
+  const [product] = await withReleases([seed]);
   const copy = getUi(locale);
   const vi = locale === "vi";
 
@@ -58,7 +61,7 @@ export default async function ProductPage({ params }: PageProps) {
           <h1>{product.name}</h1>
           <p className="intro-copy">{product.summary[locale]}</p>
           <div className="product-quick-facts">
-            <div><span>{vi ? "Bản phát hành" : "Release"}</span><ReleaseBadge locale={locale} /></div>
+            <div><span>{vi ? "Bản phát hành" : "Release"}</span><ReleaseBadge locale={locale} release={product.release} /></div>
             <CompatibilityRow locale={locale} status={{ kind: "pending" }} />
           </div>
           <Link className="button button-primary product-detail-button" href={"/" + locale + "/center"}>
@@ -96,7 +99,7 @@ export default async function ProductPage({ params }: PageProps) {
         <aside className="detail-aside" aria-label={vi ? "Trạng thái sản phẩm" : "Product status"}>
           <p className="eyebrow">{vi ? "TRẠNG THÁI" : "STATUS"}</p>
           <dl className="status-list">
-            <div><dt>{vi ? "Bản phát hành" : "Release"}</dt><dd><ReleaseBadge locale={locale} /></dd></div>
+            <div><dt>{vi ? "Bản phát hành" : "Release"}</dt><dd><ReleaseBadge locale={locale} release={product.release} /></dd></div>
             <div><dt>{vi ? "Tương thích" : "Compatibility"}</dt><dd>{copy.compatibility}</dd></div>
             <div><dt>{vi ? "Kênh" : "Channel"}</dt><dd>{vi ? "Đang xác nhận" : "To be confirmed"}</dd></div>
           </dl>

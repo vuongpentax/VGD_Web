@@ -2,11 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { ProductCard } from "@/components/product-card";
-import { productTabLabel, type PreviewProduct } from "@/lib/catalog";
+import { productShortName } from "@/lib/catalog";
+import type { CatalogEntry } from "@/lib/catalog-releases";
 import type { Locale } from "@/lib/i18n";
 import { getUi } from "@/lib/i18n";
+import { ScrollRail } from "@/components/scroll-rail";
 
-export function CatalogSearch({ products, locale }: { products: PreviewProduct[]; locale: Locale }) {
+export function CatalogSearch({ products, locale }: { products: CatalogEntry[]; locale: Locale }) {
   const copy = getUi(locale);
   const [query, setQuery] = useState("");
   const [activeProduct, setActiveProduct] = useState<string | null>(null);
@@ -21,22 +23,21 @@ export function CatalogSearch({ products, locale }: { products: PreviewProduct[]
 
   return (
     <div className="catalog-wrap page-width">
-      <nav className="catalog-filters" aria-label={locale === "vi" ? "Lọc theo sản phẩm" : "Filter by product"}>
-        <button className={"product-pill" + (activeProduct === null ? " product-pill-active" : "")} type="button" aria-pressed={activeProduct === null} onClick={() => setActiveProduct(null)}>
-          {locale === "vi" ? "Tất cả" : "All"}
-        </button>
-        {products.map((product) => (
-          <button
-            className={"product-pill" + (activeProduct === product.slug ? " product-pill-active" : "")}
-            type="button"
-            key={product.id}
-            aria-pressed={activeProduct === product.slug}
-            onClick={() => setActiveProduct(product.slug)}
-          >
-            {productTabLabel(product)}
-          </button>
-        ))}
-      </nav>
+      <ScrollRail locale={locale}>
+        <nav className="rail-list" aria-label={locale === "vi" ? "Lọc theo sản phẩm" : "Filter by product"}>
+          {products.map((product) => (
+            <button
+              className={"rail-item" + (activeProduct === product.slug ? " is-active" : "")}
+              type="button"
+              key={product.id}
+              aria-pressed={activeProduct === product.slug}
+              onClick={() => setActiveProduct(activeProduct === product.slug ? null : product.slug)}
+            >
+              {productShortName(product)}
+            </button>
+          ))}
+        </nav>
+      </ScrollRail>
       <header className="catalog-intro">
         <p className="eyebrow">{locale === "vi" ? "DANH MỤC VGD · PREVIEW" : "VGD CATALOG · PREVIEW"}</p>
         <h1>{locale === "vi" ? "Công cụ cho workflow của bạn" : "Tools for your workflow"}</h1>

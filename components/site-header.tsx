@@ -2,19 +2,25 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { getUi } from "@/lib/i18n";
 
 const navItems = [
-  ["plugins", "plugins"],
-  ["center", "center"],
-  ["docs", "docs"],
+  ["home", ""],
   ["changelog", "changelog"],
-  ["roadmap", "roadmap"],
-  ["about", "about"],
   ["contact", "contact"],
+  ["plugins", "plugins"],
 ] as const;
+
+// The site is Vietnamese-only for now. English routes under /en stay in place;
+// set this to true to bring the VI / EN switch back.
+const showLanguageSwitch = false;
+
+function isActiveNav(pathname: string, locale: Locale, href: string) {
+  const target = href ? "/" + locale + "/" + href : "/" + locale;
+  return pathname === target || (href !== "" && pathname.startsWith(target + "/"));
+}
 
 export function SiteHeader({ locale }: { locale: Locale }) {
   const copy = getUi(locale);
@@ -80,12 +86,6 @@ export function SiteHeader({ locale }: { locale: Locale }) {
       </a>
       <header className="site-header">
         <div className="header-inner">
-          <Link className="wordmark" href={"/" + locale} aria-label="VGD home">
-            <img className="wordmark-logo" src="/brand/vgd-logo.svg" alt="" aria-hidden="true" width={32} height={32} />
-            <span>VGD</span>
-            <span className="wordmark-caption">TOOLS FOR SKETCHUP</span>
-          </Link>
-
           <button
             ref={toggleRef}
             className="menu-toggle"
@@ -104,21 +104,25 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             className={"site-nav" + (menuOpen ? " is-open" : "")}
             aria-label={locale === "vi" ? "Điều hướng chính" : "Primary navigation"}
           >
-            {navItems.map(([key, href]) => (
-              <Link
-                key={key}
-                href={"/" + locale + "/" + href}
-                aria-current={pathname === "/" + locale + "/" + href || pathname.startsWith("/" + locale + "/" + href + "/") ? "page" : undefined}
-                onClick={closeMenu}
-              >
-                {copy.nav[key]}
-              </Link>
+            {navItems.map(([key, href], index) => (
+              <Fragment key={key}>
+                {index > 0 && <span className="nav-sep" aria-hidden="true">|</span>}
+                <Link
+                  href={href ? "/" + locale + "/" + href : "/" + locale}
+                  aria-current={isActiveNav(pathname, locale, href) ? "page" : undefined}
+                  onClick={closeMenu}
+                >
+                  {copy.nav[key]}
+                </Link>
+              </Fragment>
             ))}
-            <div className="language-switch" role="group" aria-label={copy.nav.language}>
-              <Link href={switchLocale("vi")} aria-current={locale === "vi" ? "page" : undefined} onClick={closeMenu}>VI</Link>
-              <span aria-hidden="true">/</span>
-              <Link href={switchLocale("en")} aria-current={locale === "en" ? "page" : undefined} onClick={closeMenu}>EN</Link>
-            </div>
+            {showLanguageSwitch && (
+              <div className="language-switch" role="group" aria-label={copy.nav.language}>
+                <Link href={switchLocale("vi")} aria-current={locale === "vi" ? "page" : undefined} onClick={closeMenu}>VI</Link>
+                <span aria-hidden="true">/</span>
+                <Link href={switchLocale("en")} aria-current={locale === "en" ? "page" : undefined} onClick={closeMenu}>EN</Link>
+              </div>
+            )}
           </nav>
         </div>
       </header>

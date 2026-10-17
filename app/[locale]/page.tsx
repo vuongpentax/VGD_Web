@@ -8,6 +8,7 @@ import { ReleaseEmptyState } from "@/components/release-empty-state";
 import { createMetadata } from "@/lib/seo";
 import { isLocale } from "@/lib/i18n";
 import { previewCatalog, publishedCatalog } from "@/lib/catalog";
+import { withReleases } from "@/lib/catalog-releases";
 import { publicationReady } from "@/lib/site";
 
 interface HomeProps {
@@ -30,6 +31,7 @@ export default async function HomePage({ params }: HomeProps) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const vi = locale === "vi";
+  const products = await withReleases(publicationReady ? publishedCatalog : previewCatalog);
 
   return (
     <>
@@ -92,7 +94,7 @@ export default async function HomePage({ params }: HomeProps) {
           </Link>
         </div>
         <div className="product-grid">
-          {(publicationReady ? publishedCatalog : previewCatalog).map((product) => <ProductCard key={product.id} product={product} locale={locale} />)}
+          {products.map((product) => <ProductCard key={product.id} product={product} locale={locale} />)}
         </div>
       </section>
 
