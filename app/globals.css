@@ -906,3 +906,8 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   .changelog-entry-header { align-items: flex-start; flex-direction: column; }
   .changelog-entry-groups { grid-template-columns: 1fr; }
 }
+
+/* Contrast fixes: footer labels, footer note and search icon reach WCAG 2.2 AA (4.5:1). */
+.footer-label { color: #5b6661; }
+.footer-bottom { color: #5b6661; }
+.search-icon { color: #5b6661; }
