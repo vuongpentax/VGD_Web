@@ -82,3 +82,28 @@ Replace the provisional VGD wordmark and media when approved VGD assets arrive. 
 - [ ] Check page overflow at each acceptance width and 200% zoom.
 - [ ] Run `npm run build`.
 - [ ] Confirm noindex, robots, sitemap, and release data retain their preview state.
+
+## Home showcase state matrix
+
+The home page is a plugin rail (four items visible, arrows inside the pill) plus one panel for the selected plugin. Selecting an item updates the URL hash (`#cen`, `#bim`, `#cab`, ...), so each plugin has a shareable address.
+
+| Element | Default | Hover | Focus-visible | Active | Disabled | Loading | Error / empty |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Rail item (inactive) | `#767676` text, 4.5:1 on white | `#333` text | 3px outline, inset | scales to 98% | not used | not used | not used |
+| Rail item (selected) | `#000` text, bold | unchanged | 3px outline, inset | scales to 98% | not used | not used | not used |
+| Previous / next arrow | 44px on mobile, 40px on desktop, `#777` | `#000` | 3px outline | scales to 96% | 30% opacity, not focusable as action | not used | not used |
+| Panel action | filled dark button | darker fill | 3px outline | pressed | not used | not used | not used |
+| Release badge | outlined pill | not interactive | not interactive | not interactive | not used | not used | "Chưa có bản phát hành" when no release is published |
+
+Rules:
+- Every interactive control must have a visible focus indicator and a touch target of at least 44px high on mobile.
+- The rail and panel are rendered from server data, so no loading state is shown on the page. If release data cannot be read, the last valid data is kept; if none exists, the "no release" state is shown. A version must never be shown without a verified manifest value.
+- Inactive rail text must meet 3:1 for large text and 4.5:1 for body text.
+- Reduced-motion users keep the rail and panel without the 25% slide transition; the transition is nonessential motion.
+
+Acceptance checks:
+- [ ] Tab reaches each rail item and both arrows in order; Enter or Space selects an item.
+- [ ] Arrows are disabled at the first and last item and announce their names.
+- [ ] Every selectable state (default, hover, focus, active) is visible on desktop and mobile.
+- [ ] Mobile arrows and rail items are at least 44px high.
+- [ ] Refreshing a URL with a hash shows the matching plugin.
