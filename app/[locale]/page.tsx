@@ -1,9 +1,11 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ProductSelector } from "@/components/product-selector";
+import { HomeShowcase } from "@/components/home-showcase";
 import { createMetadata } from "@/lib/seo";
 import { isLocale } from "@/lib/i18n";
+import { previewCatalog, publishedCatalog } from "@/lib/catalog";
+import { withReleases } from "@/lib/catalog-releases";
+import { publicationReady } from "@/lib/site";
 
 interface HomeProps {
   params: Promise<{ locale: string }>;
@@ -24,22 +26,12 @@ export async function generateMetadata({ params }: HomeProps): Promise<Metadata>
 export default async function HomePage({ params }: HomeProps) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const vi = locale === "vi";
+  const products = await withReleases(publicationReady ? publishedCatalog : previewCatalog);
 
   return (
     <>
-      <ProductSelector locale={locale} />
-      <section className="catalog-intro home-intro page-width" aria-labelledby="home-title">
-        <h1 id="home-title">{vi ? "Bộ công cụ VGD cho SketchUp" : "The VGD toolkit for SketchUp"}</h1>
-        <p>
-          {vi
-            ? "Cài đặt, cập nhật và quản lý các plugin VGD ngay trong SketchUp bằng VGD Center."
-            : "Install, update, and manage VGD plugins inside SketchUp with VGD Center."}
-        </p>
-        <Link className="button button-primary showcase-button" href={"/" + locale + "/center"}>
-          {vi ? "Tìm hiểu VGD Center" : "Learn about VGD Center"} <span aria-hidden="true">↗</span>
-        </Link>
-      </section>
+      <h1 className="sr-only">{locale === "vi" ? "Bộ công cụ VGD cho SketchUp" : "The VGD toolkit for SketchUp"}</h1>
+      <HomeShowcase products={products} locale={locale} />
     </>
   );
 }

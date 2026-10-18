@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
+import { HideOnHome } from "@/components/hide-on-home";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { PreviewNotice } from "@/components/preview-notice";
@@ -50,7 +51,9 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
           <SiteHeader locale={locale} />
           {!publicationReady && <PreviewNotice locale={locale} />}
           <main id="main-content">{children}</main>
-          <SiteFooter locale={locale} />
+          <HideOnHome>
+            <SiteFooter locale={locale} />
+          </HideOnHome>
         </div>
       </body>
     </html>

@@ -596,9 +596,15 @@ body { background: #dce5de; }
   .rail-item { font-size: 16px; letter-spacing: 0; padding: 0 2px; }
 }
 
-/* Home: a single intro block under the product rail. */
-.home-intro { display: flex; flex-direction: column; align-items: center; padding-bottom: 90px; }
-.home-intro .showcase-button { margin-top: 8px; }
+/* Home: plugin rail plus one panel for the selected plugin. The shell keeps its
+   height to the content instead of stretching to the full viewport. */
+body:has(.home-panel) .site-shell { min-height: 0; }
+body:has(.home-panel) .site-shell { margin-bottom: 40px; }
+.home-tagline { max-width: 720px; margin: 18px auto 0; padding: 0 20px; color: #5d6b61; font-size: 14px; line-height: 1.6; text-align: center; text-wrap: balance; }
+.home-panel { display: flex; flex-direction: column; align-items: center; gap: 14px; margin: 30px auto 0; padding: 0 20px 24px; text-align: center; }
+.home-panel h2 { margin: 6px 0 0; font-size: clamp(26px, 3vw, 34px); line-height: 1.12; letter-spacing: -.045em; }
+.home-description { max-width: 460px; min-height: 48px; margin: 0; color: #4e5c51; font-size: 15px; line-height: 1.65; }
+.home-panel .showcase-button { margin-top: 10px; }
 
 /* Header: centered text menu, no logo, separators, no underline. */
 .site-header .header-inner { justify-content: center; }

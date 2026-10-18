@@ -16,6 +16,8 @@ export interface ManifestDownload {
 export interface ManifestProduct {
   id: string;
   name: string;
+  /** Vietnamese description published in the shared catalog, when present. */
+  description?: string;
   lifecycle: "in_development" | "released";
   version?: string;
   releaseChannel?: ReleaseChannel;
@@ -84,7 +86,7 @@ function parseDownload(id: string, value: unknown, version: string): ManifestDow
 
 function parseProduct(value: unknown, seenIds: Set<string>): ManifestProduct {
   if (!isRecord(value)) throw new Error("mục plugin không hợp lệ");
-  const { id, name, lifecycle, version, release_channel: releaseChannel } = value;
+  const { id, name, lifecycle, version, release_channel: releaseChannel, description } = value;
 
   if (typeof id !== "string" || !ID_PATTERN.test(id)) throw new Error("ID plugin không hợp lệ");
   if (seenIds.has(id)) throw new Error(`trùng plugin: ${id}`);
@@ -104,6 +106,7 @@ function parseProduct(value: unknown, seenIds: Set<string>): ManifestProduct {
   return {
     id,
     name,
+    ...(typeof description === "string" && description.trim() !== "" ? { description: description.trim() } : {}),
     lifecycle: "released",
     version,
     releaseChannel: expectedChannel,

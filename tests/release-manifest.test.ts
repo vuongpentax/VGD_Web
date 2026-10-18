@@ -24,6 +24,7 @@ describe("parseReleaseManifest", () => {
     const dim = result.manifest.products.find((product) => product.id === "dim");
     expect(dim).toMatchObject({ version: "3.3.0-beta.8", releaseChannel: "beta", lifecycle: "released" });
     expect(dim?.download?.sha256).toMatch(/^[0-9a-f]{64}$/);
+    expect(typeof dim?.description).toBe("string");
   });
 
   it("accepts an in_development product without a download", () => {
