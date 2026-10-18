@@ -3,9 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ConceptArtwork } from "@/components/concept-artwork";
 import { PageIntro } from "@/components/page-intro";
+import { ReleaseBadge } from "@/components/release-badge";
 import { StatusState } from "@/components/status-state";
 import { createMetadata } from "@/lib/seo";
 import { isLocale, type Locale } from "@/lib/i18n";
+import { loadCenterRelease } from "@/lib/release-manifest-source";
 
 interface PageProps { params: Promise<{ locale: string }> }
 
@@ -21,6 +23,8 @@ export default async function CenterPage({ params }: PageProps) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const vi = locale === "vi";
+  // The download is shown only from the verified center-update.json in VGD_Plugins.
+  const release = await loadCenterRelease();
   const steps: Array<{ number: string; title: string; body: string }> = vi ? [
     { number: "01", title: "Khám phá", body: "Đọc thông tin sản phẩm và hướng dẫn trên website VGD." },
     { number: "02", title: "Quản lý trong SketchUp", body: "VGD Center là extension dành cho cài đặt, cập nhật và gỡ plugin VGD." },
@@ -41,8 +45,16 @@ export default async function CenterPage({ params }: PageProps) {
           : "The website helps you explore. VGD Center manages plugin installation, updates, and removal inside SketchUp."}
       >
         <div className="detail-actions">
-          <span className="status-pill status-pill-muted"><span className="status-dot" aria-hidden="true" />{vi ? "Chưa có bản phát hành" : "No release available yet"}</span>
-          <span className="button button-disabled" aria-disabled="true">{vi ? "Chưa có link tải chính thức" : "Official download not available"}</span>
+          {release ? (
+            <a className="button button-primary" href={release.download.url} download>
+              {vi ? `Tải VGD Center ${release.version}` : `Download VGD Center ${release.version}`} <span aria-hidden="true">↓</span>
+            </a>
+          ) : (
+            <>
+              <span className="status-pill status-pill-muted"><span className="status-dot" aria-hidden="true" />{vi ? "Chưa có bản phát hành" : "No release available yet"}</span>
+              <span className="button button-disabled" aria-disabled="true">{vi ? "Chưa có link tải chính thức" : "Official download not available"}</span>
+            </>
+          )}
           <Link className="button button-secondary" href={`/${locale}/docs`}>{vi ? "Đọc hướng dẫn" : "Read the guides"}<span aria-hidden="true">↗</span></Link>
         </div>
       </PageIntro>
@@ -63,6 +75,22 @@ export default async function CenterPage({ params }: PageProps) {
       </div>
     </section>
 
+    {release ? (
+      <section className="section-block page-width" aria-labelledby="center-download-title">
+        <div className="section-heading">
+          <div><p className="eyebrow">{vi ? "TẢI VỀ" : "DOWNLOAD"}</p>
+            <h2 id="center-download-title">{vi ? "Tải VGD Center" : "Download VGD Center"}</h2></div>
+        </div>
+        <dl className="status-list">
+          <div><dt>{vi ? "Phiên bản" : "Version"}</dt><dd><ReleaseBadge locale={locale} release={{ channel: release.channel, version: release.version }} /></dd></div>
+          <div><dt>{vi ? "Dung lượng" : "Size"}</dt><dd>{Math.round(release.download.size / 1024)} KB</dd></div>
+          <div><dt>SHA-256</dt><dd style={{ overflowWrap: "anywhere" }}>{release.download.sha256}</dd></div>
+        </dl>
+        <p className="aside-note">{vi
+          ? "Sau khi tải, mở SketchUp, vào Extensions → Extension Manager → Install Extension, chọn file .rbz rồi khởi động lại SketchUp. VGD Center quản lý cài đặt và cập nhật các plugin VGD khác."
+          : "After downloading, open SketchUp, go to Extensions → Extension Manager → Install Extension, choose the .rbz file, then restart SketchUp. VGD Center manages installing and updating the other VGD plugins."}</p>
+      </section>
+    ) : (
     <section className="section-block page-width">
       <StatusState
         kind="unavailable"
@@ -81,5 +109,6 @@ export default async function CenterPage({ params }: PageProps) {
         <Link className="text-link" href={`/${locale}/plugins`}>{vi ? "Duyệt danh mục plugin" : "Browse the plugin catalog"}<span aria-hidden="true">↗</span></Link>
       </div>
     </section>
+    )}
   </>;
 }
