@@ -13,7 +13,7 @@ Ghi chú bàn giao để tiếp tục làm việc ở phiên mới. Cập nhật
 
 - **Next.js 16 App Router**, TypeScript. CSS viết tay trong `app/globals.css`.
 - **Ngôn ngữ:** `vi` là mặc định. `en` còn tồn tại nhưng nút VI/EN đang ẩn (`showLanguageSwitch = false` trong `components/site-header.tsx`).
-- **Trang chủ:** `app/[locale]/page.tsx` dùng `components/home-showcase.tsx`. Có thanh chọn plugin (4 mục mỗi lần, có mũi tên). Chọn một mục sẽ đổi URL thành `#cen`, `#bim`, `#cab`, `#cdr`, `#dim`, `#imp`, `#lib`, `#pkg`, `#ref`, `#scn`. Panel bên dưới hiện logo, tên, mô tả, phiên bản từ manifest và nút cài bằng VGD Center. Chân trang chỉ ẩn ở trang chủ (`components/hide-on-home.tsx`).
+- **Trang chủ:** `app/[locale]/page.tsx` dùng `components/home-showcase.tsx`. Có thanh chọn plugin (4 mục mỗi lần, có mũi tên). Chọn một mục sẽ đổi URL thành `#cen`, `#bim`, `#cab`, `#cdr`, `#dim`, `#imp`, `#lib`, `#pkg`, `#ref`, `#scn`. Panel bên dưới hiện logo, tên, mô tả, phiên bản từ manifest và nút cài bằng VGD Center. Chân trang đã bỏ khỏi tất cả các trang (theo yêu cầu người dùng). Component cũ `site-footer.tsx` và `hide-on-home.tsx` đã xóa, còn CSS `.site-footer` trong `app/globals.css` và `app/design-system.css`.
 - **Danh sách sản phẩm:** `lib/catalog.ts`. Có 9 plugin, cộng VGD Center (`href: "/center"`). Mỗi mục có `manifestId`, `shortName` (tên 3 chữ) và `icon`.
 - **Manifest thật:** đọc phía server từ `shared/vgd-center/catalog.json` và `center-update.json` trên `main` của VGD_Plugins.
   - `lib/release-manifest.ts`: kiểm tra dữ liệu.
@@ -29,21 +29,22 @@ Ghi chú bàn giao để tiếp tục làm việc ở phiên mới. Cập nhật
 - Logo chính là icon VGD Center. Bảng màu chính thức **chưa có**, màu hiện tại là tạm.
 - Danh sách sản phẩm là mọi thư mục plugin, trừ VGD Center. Center là manager, vẫn có trang riêng và được đưa vào thanh chọn như một mục.
 - GitHub `VGD_Plugins` là kênh cập nhật chính. Web và Center cùng đọc một catalog.
-- Sản phẩm chưa có release (Cabinet Draw, Package) có `lifecycle: "in_development"` trong catalog. Center bỏ qua các mục này. Thay đổi này nằm ở commit `f62524c` trong VGD_Plugins, **chưa push**. Chỉ push sau khi Center 1.0.12 đã phát hành, vì Center 1.0.11 đang cài sẽ hiện cảnh báo.
+- Sản phẩm chưa có release (Cabinet Draw, Package) có `lifecycle: "in_development"` trong catalog. Center bỏ qua các mục này. Thay đổi này nằm ở commit `f62524c` trong VGD_Plugins, đã có trên `origin/main`. Center vẫn bỏ qua mục `in_development`.
 - Không tài khoản, không thanh toán, không cài plugin từ web (theo AGENTS.md). Nút thanh toán và tải bộ cài của mẫu XSU đã bỏ.
 - Chỉ làm tiếng Việt trước. Tiếng Anh để sau.
 
 ## Việc đang dở
 
-1. **Lịch sử phát hành cho trang Cập nhật (chưa làm).** Người dùng đã đồng ý mở rộng catalog. Đã lấy danh sách 10 release từ GitHub, nhưng chưa sửa gì.
-   - Kế hoạch: thêm trường `releases` (chỉ bổ sung, không đổi trường cũ) vào `shared/vgd-center/catalog.json`.
-   - Làm trên git worktree riêng từ `origin/main`. Không dùng checkout `D:\Code\VGD_Plugins` vì đang ở nhánh `dim/autostyle-ux` có thay đổi của người khác.
-   - Sau đó cập nhật parser và trang changelog.
-   - Kiểm tra Center vẫn đọc được catalog, bằng harness `validate_catalog_check.rb` trong thư mục scratchpad, dùng Ruby 2.7 tại `C:\Ruby27-x64`.
+1. **Lịch sử phát hành cho trang Cập nhật (làm xong local, chưa push).**
+   - VGD_Plugins: worktree `D:\Code\VGD_Plugins_releases`, nhánh `feat/catalog-release-history`, commit `bb12d6f`, đã merge vào `origin/main` (fast-forward). Nhánh `feat/catalog-release-history` vẫn còn trên origin. Thêm trường `releases` (chỉ bổ sung) vào `shared/vgd-center/catalog.json` và `center-update.json`.
+   - Center vẫn đọc được cả hai file (kiểm bằng Ruby 2.7 tại `C:\Ruby27-x64`, gọi `validate_catalog` và `validate_center_release`).
+   - VGD_Web (chưa commit): `lib/release-manifest.ts` đọc `releases`, `lib/changelog.ts` mới, trang `app/[locale]/changelog/page.tsx` và `components/changelog-entry.tsx` hiển thị lịch sử. Test 37/37 đạt, `tsc` và `npm run build` đạt.
+   - Trang Cập nhật đã hiện đủ 10 release khi chạy local, vì `main` đã có `releases`. Phần VGD_Web còn lại chưa commit, chờ người dùng duyệt.
+   - Commit `f62524c` (`lifecycle: "in_development"`) đã có trên `origin/main`. Ghi chú cũ nói là chưa push là sai.
 2. **Nội dung tiếng Anh, mô tả, ảnh demo, bảng màu, kênh liên hệ, chính sách riêng tư:** chờ người dùng cung cấp.
 3. **Cabinet Draw và Package:** người dùng đang làm, chưa xong.
 4. **ESLint:** chưa cài. Người dùng đã hỏi ESLint là gì nhưng chưa đồng ý cài.
-5. **Cỡ chữ chân trang:** một số chữ 8–9px. Chưa quyết định có tăng lên 11px không.
+5. **Cỡ chữ chân trang:** đã bỏ chân trang khỏi mọi trang nên mục này không còn cần làm.
 6. **Trang VGD Center:** commit `c245244` (không phải do phiên này tạo) thêm nút tải đã xác minh. Cần kiểm tra giao diện trang này.
 
 ## Đã kiểm tra trên bản production
