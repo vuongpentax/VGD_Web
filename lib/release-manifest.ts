@@ -13,6 +13,16 @@ export interface ManifestDownload {
   sha256: string;
 }
 
+/** One published release from the shared `releases` history. No notes are stored here. */
+export interface ManifestRelease {
+  version: string;
+  releaseChannel: ReleaseChannel;
+  /** Calendar date as published, YYYY-MM-DD. */
+  publishedAt: string;
+  /** GitHub release page on VGD_Plugins. */
+  url: string;
+}
+
 export interface ManifestProduct {
   id: string;
   name: string;
@@ -22,6 +32,7 @@ export interface ManifestProduct {
   version?: string;
   releaseChannel?: ReleaseChannel;
   download?: ManifestDownload;
+  releases: ManifestRelease[];
 }
 
 export interface ReleaseManifest {
@@ -35,6 +46,7 @@ export interface CenterRelease {
   version: string;
   channel: ReleaseChannel;
   download: ManifestDownload;
+  releases: ManifestRelease[];
 }
 
 export type CenterParseResult =
@@ -49,11 +61,13 @@ const ID_PATTERN = /^[a-z0-9_]+$/;
 const VERSION_PATTERN = /^(\d+)\.(\d+)\.(\d+)(?:-(alpha|beta)(?:\.(\d+))?)?$/;
 const SHA256_PATTERN = /^[0-9a-f]{64}$/i;
 const RBZ_PATTERN = /^[A-Za-z0-9_.-]+\.rbz$/i;
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 // Same hosts the VGD Center accepts for package downloads.
 const ALLOWED_URL_PREFIXES = [
   "https://raw.githubusercontent.com/vuongpentax/VGD_Plugins/",
   "https://github.com/vuongpentax/VGD_Plugins/releases/download/",
 ];
+const RELEASE_PAGE_PREFIX = "https://github.com/vuongpentax/VGD_Plugins/releases/tag/";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -63,6 +77,29 @@ function channelForVersion(version: string): ReleaseChannel | null {
   const match = VERSION_PATTERN.exec(version);
   if (!match) return null;
   return match[4] === "alpha" ? "alpha" : match[4] === "beta" ? "beta" : "stable";
+}
+
+/** Optional history list. A missing list means no history; a malformed one rejects the manifest. */
+function parseReleases(id: string, value: unknown): ManifestRelease[] {
+  if (value === undefined) return [];
+  if (!Array.isArray(value)) throw new Error(`lịch sử phát hành không hợp lệ: ${id}`);
+
+  return value.map((item) => {
+    if (!isRecord(item)) throw new Error(`mục lịch sử không hợp lệ: ${id}`);
+    const { version, release_channel: releaseChannel, published_at: publishedAt, url } = item;
+
+    if (typeof version !== "string") throw new Error(`thiếu phiên bản trong lịch sử: ${id}`);
+    const expectedChannel = channelForVersion(version);
+    if (!expectedChannel) throw new Error(`phiên bản trong lịch sử không hợp lệ: ${id}`);
+    if (releaseChannel !== expectedChannel) throw new Error(`kênh trong lịch sử không khớp phiên bản: ${id}`);
+    if (typeof publishedAt !== "string" || !DATE_PATTERN.test(publishedAt) || Number.isNaN(Date.parse(publishedAt))) {
+      throw new Error(`ngày phát hành không hợp lệ: ${id}`);
+    }
+    if (typeof url !== "string" || !url.startsWith(RELEASE_PAGE_PREFIX)) {
+      throw new Error(`liên kết release không hợp lệ: ${id}`);
+    }
+    return { version, releaseChannel: expectedChannel, publishedAt, url };
+  });
 }
 
 function parseDownload(id: string, value: unknown, version: string): ManifestDownload {
@@ -95,7 +132,7 @@ function parseProduct(value: unknown, seenIds: Set<string>): ManifestProduct {
 
   // Products without a release only exist as planning records.
   if (lifecycle === "in_development") {
-    return { id, name, lifecycle };
+    return { id, name, lifecycle, releases: [] };
   }
 
   if (typeof version !== "string") throw new Error(`thiếu phiên bản: ${id}`);
@@ -111,6 +148,7 @@ function parseProduct(value: unknown, seenIds: Set<string>): ManifestProduct {
     version,
     releaseChannel: expectedChannel,
     download: parseDownload(id, value.download, version),
+    releases: parseReleases(id, value.releases),
   };
 }
 
@@ -144,7 +182,8 @@ export function parseCenterUpdate(input: unknown): CenterParseResult {
     if (!channel) throw new Error("phiên bản Center không hợp lệ");
 
     const download = parseDownload("center", input.download, input.version);
-    return { ok: true, release: { version: input.version, channel, download } };
+    const releases = parseReleases("center", input.releases);
+    return { ok: true, release: { version: input.version, channel, download, releases } };
   } catch (error) {
     return { ok: false, error: error instanceof Error ? error.message : String(error) };
   }

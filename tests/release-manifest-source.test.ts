@@ -23,7 +23,7 @@ describe("loadReleaseManifest", () => {
   it("returns the validated manifest and requests it with a 300 second revalidation", async () => {
     const fetchImpl = vi.fn(async (_input: string, _init?: RequestInit) => jsonResponse(liveSnapshot));
     const manifest = await loadReleaseManifest(fetchImpl);
-    expect(manifest?.products).toHaveLength(7);
+    expect(manifest?.products).toHaveLength(9);
     const init = fetchImpl.mock.calls[0]?.[1] as unknown as { next: { revalidate: number; tags: string[] } };
     expect(init.next).toEqual({ revalidate: 300, tags: ["release-manifest"] });
   });
@@ -38,7 +38,7 @@ describe("loadReleaseManifest", () => {
     const manifest = await loadReleaseManifest(async () => {
       throw new Error("network down");
     });
-    expect(manifest?.products).toHaveLength(7);
+    expect(manifest?.products).toHaveLength(9);
   });
 
   it("keeps the last good manifest when a later refresh is invalid", async () => {
@@ -46,7 +46,7 @@ describe("loadReleaseManifest", () => {
     const broken = JSON.parse(liveSnapshot);
     broken.schema_version = 2;
     const manifest = await loadReleaseManifest(async () => jsonResponse(JSON.stringify(broken)));
-    expect(manifest?.products).toHaveLength(7);
+    expect(manifest?.products).toHaveLength(9);
   });
 
   it("logs the reason when a refresh is rejected", async () => {

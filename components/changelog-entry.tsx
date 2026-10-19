@@ -7,6 +7,8 @@ export interface ChangelogEntryView {
   version: string;
   channel: ReleaseChannel;
   publishedAt: string;
+  /** GitHub release page on VGD_Plugins. */
+  url: string;
   groups: Array<{ title: Record<Locale, string>; items: Record<Locale, string[]> }>;
 }
 
@@ -24,11 +26,17 @@ export function ChangelogEntry({ locale, entry }: { locale: Locale; entry: Chang
     </header>
     <time className="changelog-entry-date" dateTime={Number.isNaN(timestamp) ? undefined : new Date(timestamp).toISOString()}>{dateLabel}</time>
     <div className="changelog-entry-groups">
+      {entry.groups.length === 0 && <p className="changelog-entry-notes-missing">{locale === "vi"
+        ? "Ghi chú phát hành chưa được công bố."
+        : "Release notes have not been published yet."}</p>}
       {entry.groups.map((group, index) => <section className="changelog-entry-group" key={group.title[locale] + "-" + index}>
         <h3>{group.title[locale]}</h3>
         <ul>{group.items[locale].map((item, itemIndex) => <li key={item + "-" + itemIndex}>{item}</li>)}</ul>
       </section>)}
     </div>
+    <a className="changelog-entry-link" href={entry.url} target="_blank" rel="noopener noreferrer">
+      {locale === "vi" ? "Xem trên GitHub" : "View on GitHub"}
+    </a>
   </article>;
 }
 

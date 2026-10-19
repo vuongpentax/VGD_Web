@@ -19,7 +19,7 @@ describe("parseReleaseManifest", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.manifest.products.map((product) => product.id)).toEqual([
-      "dim", "cabinet", "library", "image_importer", "scenes", "bim_lite", "reference",
+      "dim", "cabinet", "library", "image_importer", "scenes", "bim_lite", "reference", "cabinet_draw", "package",
     ]);
     const dim = result.manifest.products.find((product) => product.id === "dim");
     expect(dim).toMatchObject({ version: "3.3.0-beta.8", releaseChannel: "beta", lifecycle: "released" });
@@ -28,12 +28,12 @@ describe("parseReleaseManifest", () => {
   });
 
   it("accepts an in_development product without a download", () => {
-    const data = cloneSnapshot();
-    data.products.push({ id: "package", name: "VGD Package", kind: "plugin", lifecycle: "in_development", visibility: "public" });
-    const result = parseReleaseManifest(data);
+    const result = parseReleaseManifest(liveSnapshot);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
-    expect(result.manifest.products.at(-1)).toEqual({ id: "package", name: "VGD Package", lifecycle: "in_development" });
+    expect(result.manifest.products.find((product) => product.id === "package")).toEqual({
+      id: "package", name: "VGD Package", lifecycle: "in_development", releases: [],
+    });
   });
 
   it("rejects an unknown schema version", () => {
@@ -144,5 +144,56 @@ describe("parseCenterUpdate", () => {
 
   it("rejects a non-object payload", () => {
     expect(parseCenterUpdate(null)).toMatchObject({ ok: false });
+  });
+});
+
+describe("release history", () => {
+  it("reads the release history of the live catalog snapshot", () => {
+    const result = parseReleaseManifest(liveSnapshot);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const imageImporter = result.manifest.products.find((product) => product.id === "image_importer");
+    expect(imageImporter?.releases.map((release) => release.version)).toEqual(["1.1.0", "1.1.0-beta.5"]);
+    expect(imageImporter?.releases[0]).toMatchObject({ releaseChannel: "stable", publishedAt: "2026-10-17" });
+  });
+
+  it("treats a missing releases list as an empty history", () => {
+    const snapshot = cloneSnapshot();
+    for (const product of snapshot.products) delete product.releases;
+    const result = parseReleaseManifest(snapshot);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.manifest.products.every((product) => product.releases.length === 0)).toBe(true);
+  });
+
+  it("rejects a release outside the VGD_Plugins release pages", () => {
+    const snapshot = cloneSnapshot();
+    snapshot.products[0].releases[0].url = "https://example.com/vgd-dim";
+    expect(parseReleaseManifest(snapshot).ok).toBe(false);
+  });
+
+  it("rejects a release whose channel does not match its version", () => {
+    const snapshot = cloneSnapshot();
+    snapshot.products[0].releases[0].release_channel = "stable";
+    expect(parseReleaseManifest(snapshot).ok).toBe(false);
+  });
+
+  it("rejects a release with an invalid date", () => {
+    const snapshot = cloneSnapshot();
+    snapshot.products[0].releases[0].published_at = "16/10/2026";
+    expect(parseReleaseManifest(snapshot).ok).toBe(false);
+  });
+
+  it("rejects a releases value that is not a list", () => {
+    const snapshot = cloneSnapshot();
+    snapshot.products[0].releases = {};
+    expect(parseReleaseManifest(snapshot).ok).toBe(false);
+  });
+
+  it("reads the VGD Center release history", () => {
+    const result = parseCenterUpdate(centerSnapshot);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.release.releases.map((release) => release.version)).toEqual(["1.0.11", "1.0.10"]);
   });
 });
