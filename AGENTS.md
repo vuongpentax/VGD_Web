@@ -2,7 +2,8 @@
 
 - This repository is `VGD_Web`. Keep all implementation changes here; `VGD_Plugins` is a separate production source repository.
 - The website is for discovery and information. VGD Center remains the only in-SketchUp install, update, and uninstall manager.
-- Do not implement account, payment, licensing, or browser-side plugin installation in Phase 1.
+- Do not implement accounts, licensing, or browser-side plugin installation in Phase 1.
+- VNPay checkout is allowed by owner decision. Keep it in `lib/vnpay.ts`, `lib/payment.ts`, `lib/orders.ts`, `lib/pricing.ts`, `app/api/vnpay/`, and the checkout pages. Never expose `VNPAY_HASH_SECRET`; grant an order only after the IPN signature and amount check pass.
 - Never invent product versions, compatibility claims, channels, release dates, RBZ URLs, checksums, or download links. If a product lacks a verified release, show “Chưa có bản phát hành” in Vietnamese (and an accurate English equivalent).
 - Treat `lib/catalog.ts` entries as preview-only planning seed, not as the final production catalog. Keep the preview warning and noindex behavior until reviewed data is connected.
 - The canonical release manifest and JSON Schema are owned by `VGD_Plugins`. Do not create a competing manifest/schema in this repository.

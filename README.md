@@ -28,7 +28,8 @@ The default route `/` redirects to Vietnamese at `/vi`. English pages are under 
 - The canonical JSON manifest and schema belong in `VGD_Plugins`; this repository must consume that shared source when it is established, not define a competing source of truth.
 - Product copy, translations, release records, Center package URL, manifest URL, brand assets, and final production roster still need owner review.
 - The preview is noindex by default. Publication remains hard-disabled in code until the shared manifest and reviewed public catalog are connected. `NEXT_PUBLIC_SITE_URL` must be the approved public origin before sitemap metadata is enabled.
-- No account, payment, license, or direct browser installation flow is part of Phase 1.
+- No account, license, or direct browser installation flow is part of Phase 1.
+- VNPay checkout exists (`/{locale}/checkout/{slug}`). It stays closed until prices in `lib/pricing.ts`, the VNPay variables, and an order store are configured. No database is connected yet.
 
 ## Environment
 
