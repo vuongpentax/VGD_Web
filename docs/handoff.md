@@ -25,7 +25,7 @@ Ghi chú bàn giao để tiếp tục làm việc ở phiên mới. Cập nhật
   - `lib/vnpay.ts`: đọc cấu hình, tạo URL thanh toán, kiểm tra chữ ký HMAC-SHA512.
   - `lib/payment.ts`: tạo đơn `pending`, xử lý IPN (kiểm tra chữ ký, số tiền, trạng thái đơn).
   - `lib/orders.ts`: giao diện kho đơn. Chưa có cơ sở dữ liệu nào được nối; `getOrderStore()` trả `null`.
-  - `lib/pricing.ts`: giá theo slug, đang **trống**. Sản phẩm không có giá sẽ không mở thanh toán.
+  - `lib/pricing.ts`: giá theo slug. Đang đặt 99.000 ₫ cho `cabinet`, `library`, `scenes`. Các sản phẩm khác miễn phí, không có checkout.
   - Route: `app/api/vnpay/create` (POST, chuyển sang VNPay), `app/api/vnpay/return/[locale]` (VNPay chuyển khách về, chỉ hiện kết quả), `app/api/vnpay/ipn` (VNPay gọi server-to-server, nơi duy nhất được đổi trạng thái đơn).
   - Trang: `/{locale}/checkout/{slug}` (form email, hiện "Chưa mở bán" khi đóng) và `/{locale}/payment/result`.
   - Biến môi trường (xem `.env.example`): `VNPAY_TMN_CODE`, `VNPAY_HASH_SECRET`, `VNPAY_PAY_URL`. Không có `VNPAY_PAY_URL` thì dùng sandbox. Không đưa secret vào repo.
@@ -49,7 +49,7 @@ Ghi chú bàn giao để tiếp tục làm việc ở phiên mới. Cập nhật
 0. **Thanh toán VNPay (code xong ở local, chưa commit, chưa test trên sandbox):**
    - Đã kiểm: 66 test đạt, `tsc` đạt, `npm run build` đạt (các route `/api/vnpay/*` là dynamic).
    - Chưa kiểm: chạy server thật rồi gọi route (bị từ chối quyền khi thử), và toàn bộ luồng thanh toán với sandbox VNPay. Phần mã phản hồi IPN và thuật toán chữ ký cần đối chiếu với tài liệu VNPay và sandbox.
-   - Còn thiếu trước khi mở bán: (a) chọn cơ sở dữ liệu cho đơn và key; (b) giá từng sản phẩm trong `lib/pricing.ts`; (c) thông tin tài khoản VNPay đã được duyệt (TMN code, hash secret, URL production); (d) chính sách riêng tư, vì thu email của khách; (e) gửi key cho khách (email hay hiện trên trang kết quả); (f) trang quản trị và kiểm tra key khi mở plugin.
+   - Còn thiếu trước khi mở bán: (a) chọn cơ sở dữ liệu cho đơn và key; (b) xác nhận giá 99.000 ₫ là mua một lần, vĩnh viễn; (c) thông tin tài khoản VNPay đã được duyệt (TMN code, hash secret, URL production); (d) chính sách riêng tư, vì thu email của khách; (e) gửi key cho khách (email hay hiện trên trang kết quả); (f) trang quản trị và kiểm tra key khi mở plugin.
    - IPN cần URL công khai (HTTPS). Thử trên preview deployment, không thử trên `localhost`.
    - Không commit cho đến khi chủ dự án đồng ý.
 1. **Lịch sử phát hành cho trang Cập nhật (làm xong local, chưa push).**
